@@ -1,0 +1,9 @@
+namespace LocadoraVeiculos.Domain.Enums;
+
+public enum StatusVeiculo
+{
+    Disponivel = 1,
+    Alugado = 2,
+    EmManutencao = 3,
+    Inativo = 4
+}

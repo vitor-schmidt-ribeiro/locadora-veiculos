@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json.Serialization;
 using LocadoraVeiculos.Api.Middleware;
 using LocadoraVeiculos.Infrastructure.Context;
@@ -24,8 +25,15 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Locadora de Veículos API",
         Version = "v1",
-        Description = "API para sistema de locadora de veículos"
+        Description = "API RESTful para gerenciamento de locadora de veículos desenvolvida com ASP.NET Core e Entity Framework Core."
     });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        c.IncludeXmlComments(xmlPath);
+    }
 });
 
 var app = builder.Build();
@@ -34,7 +42,10 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
+    app.UseSwagger(c =>
+    {
+        c.SerializeAsV2 = true;
+    });
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Locadora de Veículos API v1");

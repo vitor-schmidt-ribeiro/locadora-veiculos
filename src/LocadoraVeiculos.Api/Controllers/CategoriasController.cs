@@ -8,6 +8,7 @@ namespace LocadoraVeiculos.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class CategoriasController : ControllerBase
 {
     private readonly LocadoraDbContext _context;
@@ -17,7 +18,13 @@ public class CategoriasController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Lista todas as categorias de veículos cadastradas no sistema.
+    /// </summary>
+    /// <returns>Coleção de categorias com informações de valor base de diária.</returns>
+    /// <response code="200">Lista de categorias retornada com sucesso.</response>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<CategoriaDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<CategoriaDto>>> ObterTodas()
     {
         var categorias = await _context.Categorias
@@ -34,7 +41,16 @@ public class CategoriasController : ControllerBase
         return Ok(categorias);
     }
 
+    /// <summary>
+    /// Obtém os dados de uma categoria específica pelo identificador.
+    /// </summary>
+    /// <param name="id">Identificador único da categoria.</param>
+    /// <returns>Dados da categoria solicitada.</returns>
+    /// <response code="200">Categoria encontrada com sucesso.</response>
+    /// <response code="404">Categoria não encontrada.</response>
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(CategoriaDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<CategoriaDto>> ObterPorId(int id)
     {
         var categoria = await _context.Categorias
@@ -55,7 +71,18 @@ public class CategoriasController : ControllerBase
         return Ok(categoria);
     }
 
+    /// <summary>
+    /// Cadastra uma nova categoria de veículo no sistema.
+    /// </summary>
+    /// <param name="dto">Dados para inclusão da categoria.</param>
+    /// <returns>Dados da categoria recém-cadastrada.</returns>
+    /// <response code="201">Categoria criada com sucesso.</response>
+    /// <response code="400">Dados inválidos fornecidos.</response>
+    /// <response code="409">Conflito por nome de categoria já existente.</response>
     [HttpPost]
+    [ProducesResponseType(typeof(CategoriaDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<CategoriaDto>> Criar([FromBody] CriarCategoriaDto dto)
     {
         if (!ModelState.IsValid)
@@ -88,7 +115,20 @@ public class CategoriasController : ControllerBase
         return CreatedAtAction(nameof(ObterPorId), new { id = categoria.Id }, retorno);
     }
 
+    /// <summary>
+    /// Atualiza os dados de uma categoria de veículo existente.
+    /// </summary>
+    /// <param name="id">Identificador único da categoria.</param>
+    /// <param name="dto">Dados atualizados da categoria.</param>
+    /// <response code="204">Categoria atualizada com sucesso.</response>
+    /// <response code="400">Dados inválidos fornecidos.</response>
+    /// <response code="404">Categoria não encontrada.</response>
+    /// <response code="409">Conflito por nome já utilizado em outra categoria.</response>
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Atualizar(int id, [FromBody] AtualizarCategoriaDto dto)
     {
         if (!ModelState.IsValid)
@@ -112,7 +152,17 @@ public class CategoriasController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Remove uma categoria do banco de dados.
+    /// </summary>
+    /// <param name="id">Identificador da categoria a ser excluída.</param>
+    /// <response code="204">Categoria excluída com sucesso.</response>
+    /// <response code="400">Não é possível excluir a categoria pois existem veículos associados a ela.</response>
+    /// <response code="404">Categoria não encontrada.</response>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar(int id)
     {
         var categoria = await _context.Categorias

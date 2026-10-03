@@ -9,6 +9,7 @@ namespace LocadoraVeiculos.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class VeiculosController : ControllerBase
 {
     private readonly LocadoraDbContext _context;
@@ -18,7 +19,13 @@ public class VeiculosController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Lista todos os veículos cadastrados na frota.
+    /// </summary>
+    /// <returns>Coleção de veículos com nomes de fabricante e categoria.</returns>
+    /// <response code="200">Lista de veículos retornada com sucesso.</response>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<VeiculoDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<VeiculoDto>>> ObterTodos()
     {
         var veiculos = await _context.Veiculos
@@ -44,7 +51,16 @@ public class VeiculosController : ControllerBase
         return Ok(veiculos);
     }
 
+    /// <summary>
+    /// Obtém os dados detalhados de um veículo pelo ID.
+    /// </summary>
+    /// <param name="id">Identificador único do veículo.</param>
+    /// <returns>Dados do veículo localizado.</returns>
+    /// <response code="200">Veículo localizado com sucesso.</response>
+    /// <response code="404">Veículo não encontrado.</response>
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(VeiculoDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<VeiculoDto>> ObterPorId(int id)
     {
         var veiculo = await _context.Veiculos
@@ -74,7 +90,18 @@ public class VeiculosController : ControllerBase
         return Ok(veiculo);
     }
 
+    /// <summary>
+    /// Cadastra um novo veículo na frota.
+    /// </summary>
+    /// <param name="dto">Dados para cadastro do veículo.</param>
+    /// <returns>Dados do veículo cadastrado.</returns>
+    /// <response code="201">Veículo cadastrado com sucesso.</response>
+    /// <response code="400">Dados inválidos fornecidos ou chave estrangeira inexistente.</response>
+    /// <response code="409">Conflito por placa já cadastrada na frota.</response>
     [HttpPost]
+    [ProducesResponseType(typeof(VeiculoDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<VeiculoDto>> Criar([FromBody] CriarVeiculoDto dto)
     {
         if (!ModelState.IsValid)
@@ -130,7 +157,20 @@ public class VeiculosController : ControllerBase
         return CreatedAtAction(nameof(ObterPorId), new { id = veiculo.Id }, retorno);
     }
 
+    /// <summary>
+    /// Atualiza os dados de um veículo cadastrado.
+    /// </summary>
+    /// <param name="id">Identificador único do veículo.</param>
+    /// <param name="dto">Dados atualizados do veículo.</param>
+    /// <response code="204">Veículo atualizado com sucesso.</response>
+    /// <response code="400">Dados inválidos ou IDs de fabricante/categoria inexistentes.</response>
+    /// <response code="404">Veículo não encontrado.</response>
+    /// <response code="409">Conflito por placa já existente em outro veículo.</response>
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Atualizar(int id, [FromBody] AtualizarVeiculoDto dto)
     {
         if (!ModelState.IsValid)
@@ -167,7 +207,17 @@ public class VeiculosController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Remove um veículo do cadastro da locadora.
+    /// </summary>
+    /// <param name="id">Identificador do veículo a ser removido.</param>
+    /// <response code="204">Veículo removido com sucesso.</response>
+    /// <response code="400">Não é possível excluir o veículo pois existem aluguéis associados.</response>
+    /// <response code="404">Veículo não encontrado.</response>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar(int id)
     {
         var veiculo = await _context.Veiculos
@@ -186,8 +236,15 @@ public class VeiculosController : ControllerBase
         return NoContent();
     }
 
-    // FILTRO 1 (INNER JOIN entre Veiculos, Categorias e Fabricantes)
+    /// <summary>
+    /// Filtro 1 (INNER JOIN): Retorna veículos disponíveis para locação filtrados opcionalmente por categoria e fabricante.
+    /// </summary>
+    /// <param name="categoriaId">ID opcional da categoria para filtro.</param>
+    /// <param name="fabricanteId">ID opcional do fabricante para filtro.</param>
+    /// <returns>Lista de veículos disponíveis com dados de categoria e fabricante.</returns>
+    /// <response code="200">Veículos disponíveis retornados com sucesso.</response>
     [HttpGet("disponiveis")]
+    [ProducesResponseType(typeof(IEnumerable<VeiculoDisponivelDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<VeiculoDisponivelDto>>> FiltrarDisponiveis(
         [FromQuery] int? categoriaId,
         [FromQuery] int? fabricanteId)
@@ -224,8 +281,13 @@ public class VeiculosController : ControllerBase
         return Ok(resultado);
     }
 
-    // FILTRO 4 (LEFT JOIN entre Veiculos e Alugueis, com INNER JOIN em Fabricante e Categoria)
+    /// <summary>
+    /// Filtro 4 (LEFT JOIN): Gera o relatório de desempenho e faturamento da frota de veículos.
+    /// </summary>
+    /// <returns>Relatório agregado com contagem de locações e faturamento total por veículo.</returns>
+    /// <response code="200">Relatório da frota gerado com sucesso.</response>
     [HttpGet("relatorio-frota")]
+    [ProducesResponseType(typeof(IEnumerable<RelatorioFrotaDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<RelatorioFrotaDto>>> ObterRelatorioFrota()
     {
         var relatorio = await (from v in _context.Veiculos

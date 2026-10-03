@@ -9,6 +9,7 @@ namespace LocadoraVeiculos.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class AlugueisController : ControllerBase
 {
     private readonly LocadoraDbContext _context;
@@ -18,7 +19,13 @@ public class AlugueisController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// Lista todos os contratos de locação registrados.
+    /// </summary>
+    /// <returns>Coleção de contratos de aluguel com dados de cliente e veículo.</returns>
+    /// <response code="200">Lista de aluguéis retornada com sucesso.</response>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<AluguelDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<AluguelDto>>> ObterTodos()
     {
         var alugueis = await _context.Alugueis
@@ -48,7 +55,16 @@ public class AlugueisController : ControllerBase
         return Ok(alugueis);
     }
 
+    /// <summary>
+    /// Obtém os dados detalhados de um aluguel pelo identificador.
+    /// </summary>
+    /// <param name="id">Identificador único do contrato de aluguel.</param>
+    /// <returns>Dados do contrato de aluguel.</returns>
+    /// <response code="200">Contrato localizado com sucesso.</response>
+    /// <response code="404">Contrato de aluguel não encontrado.</response>
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(AluguelDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<AluguelDto>> ObterPorId(int id)
     {
         var aluguel = await _context.Alugueis
@@ -82,7 +98,20 @@ public class AlugueisController : ControllerBase
         return Ok(aluguel);
     }
 
+    /// <summary>
+    /// Cria uma nova locação de veículo para um cliente.
+    /// </summary>
+    /// <param name="dto">Dados para abertura da locação.</param>
+    /// <returns>Dados do contrato de locação gerado.</returns>
+    /// <response code="201">Locação criada com sucesso e status do veículo alterado para Alugado.</response>
+    /// <response code="400">Dados inválidos fornecidos ou inconsistência de datas.</response>
+    /// <response code="404">Cliente ou veículo não localizado.</response>
+    /// <response code="409">Veículo indisponível para locação.</response>
     [HttpPost]
+    [ProducesResponseType(typeof(AluguelDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<AluguelDto>> Criar([FromBody] CriarAluguelDto dto)
     {
         if (!ModelState.IsValid)
@@ -151,7 +180,18 @@ public class AlugueisController : ControllerBase
         return CreatedAtAction(nameof(ObterPorId), new { id = aluguel.Id }, retorno);
     }
 
+    /// <summary>
+    /// Registra a devolução do veículo, calcula o valor final da locação e atualiza o odômetro da frota.
+    /// </summary>
+    /// <param name="id">Identificador do aluguel a ser finalizado.</param>
+    /// <param name="dto">Dados de devolução (data efetiva e odômetro final).</param>
+    /// <response code="200">Devolução registrada com sucesso e veículo liberado.</response>
+    /// <response code="400">Dados inválidos ou inconsistência na quilometragem/data.</response>
+    /// <response code="404">Aluguel não encontrado.</response>
     [HttpPut("{id}/devolucao")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RegistrarDevolucao(int id, [FromBody] DevolucaoAluguelDto dto)
     {
         if (!ModelState.IsValid)
@@ -195,7 +235,17 @@ public class AlugueisController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Cancela um aluguel ativo (liberando o veículo) ou exclui o registro histórico.
+    /// </summary>
+    /// <param name="id">Identificador do aluguel.</param>
+    /// <response code="200">Aluguel ativo cancelado com sucesso.</response>
+    /// <response code="204">Registro de aluguel excluído com sucesso.</response>
+    /// <response code="404">Aluguel não localizado.</response>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CancelarOuExcluir(int id)
     {
         var aluguel = await _context.Alugueis
@@ -223,8 +273,17 @@ public class AlugueisController : ControllerBase
         return NoContent();
     }
 
-    // FILTRO 2 (INNER JOIN entre Alugueis, Clientes, Veiculos e Fabricantes)
+    /// <summary>
+    /// Filtro 2 (INNER JOIN): Retorna o histórico de locações de um cliente com dados completos de veículo e fabricante.
+    /// </summary>
+    /// <param name="clienteId">Identificador do cliente.</param>
+    /// <param name="status">Filtro opcional pelo status da locação.</param>
+    /// <returns>Histórico de locações do cliente.</returns>
+    /// <response code="200">Histórico de locações retornado com sucesso.</response>
+    /// <response code="404">Cliente não encontrado.</response>
     [HttpGet("cliente/{clienteId}")]
+    [ProducesResponseType(typeof(IEnumerable<HistoricoAluguelClienteDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<HistoricoAluguelClienteDto>>> ObterHistoricoPorCliente(
         int clienteId,
         [FromQuery] StatusAluguel? status)
@@ -269,8 +328,14 @@ public class AlugueisController : ControllerBase
         return Ok(resultado);
     }
 
-    // FILTRO 5 (LEFT JOIN entre Alugueis e Pagamentos, com INNER JOIN em Clientes e Veiculos)
+    /// <summary>
+    /// Filtro 5 (LEFT JOIN e INNER JOIN): Retorna contratos de aluguel associados à sua situação de pagamento.
+    /// </summary>
+    /// <param name="statusPagamento">Filtro opcional pelo status financeiro (Pendente, Pago, Cancelado).</param>
+    /// <returns>Lista de aluguéis com status de pagamento.</returns>
+    /// <response code="200">Lista com status de pagamento retornada com sucesso.</response>
     [HttpGet("status-pagamento")]
+    [ProducesResponseType(typeof(IEnumerable<AluguelStatusPagamentoDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<AluguelStatusPagamentoDto>>> ObterPorStatusPagamento(
         [FromQuery] StatusPagamento? statusPagamento)
     {

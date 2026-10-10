@@ -1,4 +1,4 @@
-# Roteiro de Gravação com Indicações de Tela (Teleprompter)
+# Roteiro de Gravação Individual (Teleprompter)
 
 **Projeto:** Sistema de Gerenciamento de Locadora de Veículos (API RESTful em .NET 8 / C#)  
 **Aluno:** Vitor Schmidt Ribeiro  
@@ -8,7 +8,7 @@
 
 ## Como usar este roteiro:
 - As instruções entre colchetes em destaque, como **`[Ação]`**, indicam o momento exato em que você deve alternar de tela, rolar o mouse ou clicar em um botão.
-- O texto entre aspas é a sua fala contínua. Você pode ler diretamente ou usar como guia na gravação.
+- O texto entre aspas é a sua fala contínua, estruturada 100% em primeira pessoa do singular (*eu desenvolvi, estruturei, implementei*).
 
 ---
 
@@ -22,13 +22,13 @@
 >
 > Como o senhor pode ver aqui no VS Code..."
 
-**`[Apontar com o mouse para as pastas Domain, Infrastructure, Api]`**
+**`[Apontar com o mouse para as pastas: Domain, Infrastructure, Api]`**
 
-> "...a aplicação foi desenvolvida em C# na plataforma .NET 8, com arquitetura em camadas e Entity Framework Core para persistência relacional."
+> "...eu desenvolvi a aplicação em C# na plataforma .NET 8, estruturada em camadas bem definidas e utilizando o Entity Framework Core para a persistência relacional."
 
 **`[Alt + Tab: Ir para o Swagger no navegador]`**
 
-> "E aqui no navegador, como o senhor pode acompanhar, a nossa API já se encontra em execução e documentada com Swagger."
+> "E aqui no navegador, como o senhor pode acompanhar, a API já se encontra em execução e documentada com Swagger."
 
 ---
 
@@ -36,18 +36,18 @@
 
 **`[Alt + Tab: Voltar para o VS Code - abrir/destacar o arquivo docs/MODELO_CONCEITUAL.md]`**
 
-> "Passando para a arquitetura do sistema, nós adotamos o padrão de divisão em camadas para garantir alta coesão e independência:
-> - O projeto **LocadoraVeiculos.Domain**: contém as entidades puras e os enums de negócio, totalmente desacoplados de bibliotecas externas;
-> - O projeto **LocadoraVeiculos.Infrastructure**: isola o acesso a dados via Entity Framework Core, mapeamentos explícitos com Fluent API, integridade relacional, chaves e migrações;
-> - E o projeto **LocadoraVeiculos.Api**: expõe os controladores RESTful, DTOs de entrada e saída com validações declarativas e middlewares de tratamento de erros."
+> "Passando para a arquitetura do sistema, eu adotei o padrão de divisão em camadas para garantir alta coesão e independência de responsabilidades:
+> - O projeto **LocadoraVeiculos.Domain**: onde isolei as entidades puras e os enums de negócio, totalmente desacoplados de bibliotecas externas;
+> - O projeto **LocadoraVeiculos.Infrastructure**: onde configurei o acesso a dados via Entity Framework Core, aplicando mapeamentos explícitos com Fluent API, integridade relacional, chaves e migrações;
+> - E o projeto **LocadoraVeiculos.Api**: onde implementei os controladores RESTful, os DTOs de entrada e saída com validações declarativas e os middlewares de tratamento de erros."
 
-**`[Rolar um pouco o MODELO_CONCEITUAL.md para mostrar a lista das 6 entidades]`**
+**`[Rolar um pouco o arquivo MODELO_CONCEITUAL.md mostrando a lista das 6 entidades]`**
 
-> "Para a modelagem relacional, estruturamos 6 entidades centrais:
+> "Para a modelagem relacional, estruturei 6 entidades centrais:
 > 1. **Fabricante**: Cadastro das montadoras dos veículos;
-> 2. **Categoria**: Classificação dos carros (como Econômico, Sedã e SUV), onde fixamos o valor base da diária;
+> 2. **Categoria**: Classificação dos carros (como Econômico, Sedã e SUV), onde fixei o valor base da diária;
 > 3. **Veículo**: O ativo físico da locadora, com placa única, ano, quilometragem e controle de status operacional (Disponível, Alugado ou Em Manutenção);
-> 4. **Cliente**: Registro do locatário com regras estritas de unicidade em CPF, e-mail e CNH;
+> 4. **Cliente**: Registro do locatário com validação estrita de unicidade em CPF, e-mail e CNH;
 > 5. **Aluguel**: O contrato central que conecta o Cliente ao Veículo, guardando datas de retirada e devolução, quilometragens inicial e final, e o valor total calculado;
 > 6. **Pagamento**: Registro financeiro do aluguel com método e situação da transação."
 
@@ -57,13 +57,13 @@
 
 **`[Alt + Tab: Ir para o Swagger no navegador]`**
 
-> "Agora vamos ver a API em execução na prática através da interface do Swagger."
+> "Agora vou demonstrar a API em execução na prática através da interface do Swagger."
 
-**`[Rolar a tela suavemente para mostrar as tags e ir até o rodapé nos Schemas]`**
+**`[Rolar suavemente a tela mostrando as tags organizadas e descer até o rodapé nos Schemas]`**
 
-> "Aqui no Swagger temos a documentação viva da API. Cada endpoint conta com sumário em português gerado via comentários XML no C#, mapeamento explícito de códigos HTTP com ProducesResponseType — cobrindo sucessos e erros como 400 Bad Request e 404 Not Found — e, no final da página, temos os Schemas documentando todos os tipos de dados dos nossos DTOs.
+> "Aqui no Swagger configurei a documentação viva da API. Cada endpoint conta com sumário em português que gerei via comentários XML no C#, mapeamento explícito de códigos HTTP com ProducesResponseType — cobrindo retornos de sucesso e erros como 400 Bad Request e 404 Not Found — e, no final da página, organizei os Schemas documentando todos os tipos de dados dos DTOs.
 >
-> Vamos agora aos testes práticos do ciclo de negócio."
+> Vou iniciar agora os testes práticos do ciclo de negócio."
 
 ---
 
@@ -71,10 +71,10 @@
 **`[Subir a tela até a tag Clientes e clicar em GET /api/Clientes]`**  
 **`[Clicar em Try it out e depois em Execute]`**
 
-> "No controlador de Clientes, realizamos a listagem via GET recebendo 200 OK com os dados retornados."
+> "No controlador de Clientes, realizo a listagem via GET recebendo 200 OK com os dados retornados."
 
 **`[Fechar o GET e abrir POST /api/Clientes]`**  
-**`[Clicar em Try it out e colar o JSON de teste:]`**
+**`[Clicar em Try it out e colar o JSON:]`**
 ```json
 {
   "nome": "Carlos Eduardo",
@@ -86,7 +86,7 @@
 ```
 **`[Clicar em Execute e mostrar o retorno 201 Created]`**
 
-> "Ao cadastrar um novo cliente via POST, a API executa validações de integridade no CPF e CNH, gravando o registro com código HTTP 201 Created."
+> "Ao cadastrar um novo cliente via POST, a API executa as validações de integridade no CPF e CNH que programei, gravando o registro com código HTTP 201 Created."
 
 ---
 
@@ -95,25 +95,25 @@
 **`[Clicar em Try it out e depois em Execute]`**  
 **`[Apontar com o mouse para o Veículo ID 1 - Gol 1.0, com status "Disponivel"]`**
 
-> "No endpoint de Veículos, consultamos a frota ativa. Observe que o Veículo de ID 1, o Gol 1.0, está atualmente no pátio com status 'Disponivel' e 45 mil quilômetros rodados."
+> "No endpoint de Veículos, consulto a frota ativa. Observe que o Veículo de ID 1, o Gol 1.0, está atualmente no pátio com status 'Disponivel' e 45 mil quilômetros rodados."
 
 ---
 
-#### 3. Teste do Ciclo de Locação e Bloqueio de Regra (Erro 400)
+#### 3. Teste de Locação e Bloqueio de Regra (Erro 400)
 **`[Ir na tag Alugueis e abrir POST /api/Alugueis]`**  
 **`[Clicar em Try it out e preencher:]`**
-- `clienteId`: 1
-- `veiculoId`: 1
-- `dataPrevistaDevolucao`: "2026-10-15T18:00:00"
+* `clienteId`: `1`
+* `veiculoId`: `1`
+* `dataPrevistaDevolucao`: `"2026-10-15T18:00:00"`
 
 **`[Clicar em Execute e mostrar o retorno 201 Created com status "Ativo"]`**
 
-> "Agora vamos abrir um contrato para o Cliente 1 utilizando o Veículo 1. Ao executar o POST, a API cria o aluguel como Ativo e altera o veículo para 'Alugado', retornando 201 Created."
+> "Agora vou abrir um contrato para o Cliente 1 utilizando o Veículo 1. Ao executar o POST, a API cria o aluguel como Ativo e altera o veículo para 'Alugado', retornando 201 Created."
 
 **`[Sem mudar nada, clicar em Execute novamente no mesmo botão]`**  
 **`[Mostrar na tela o retorno HTTP 400 Bad Request em vermelho]`**
 
-> "E para demonstrar a consistência das regras de negócio: se tentarmos alugar esse mesmo veículo novamente em seguida... ao clicar em Execute, a API bloqueia a operação retornando HTTP 400 Bad Request, informando que o veículo já se encontra alugado. Isso impede duplicidade de locação."
+> "E para demonstrar a consistência das regras de negócio que implementei: se eu tentar alugar esse mesmo veículo novamente em seguida... ao clicar em Execute, a API bloqueia a operação retornando HTTP 400 Bad Request, informando que o veículo já se encontra alugado. Isso impede duplicidade de locação no pátio."
 
 ---
 
@@ -126,9 +126,9 @@
   "observacoes": "Devolução realizada no prazo e com tanque cheio."
 }
 ```
-**`[Clicar em Execute e mostrar o retorno 200 OK com o valor total calculado]`**
+**`[Clicar em Execute e mostrar o retorno 200 OK com o valor calculado]`**
 
-> "Para encerrar o ciclo do aluguel, registramos a devolução via PUT. A API valida a quilometragem final para garantir que não seja inferior à inicial, calcula o valor financeiro multiplicando os dias pela diária da categoria do veículo, encerra o contrato e altera o status do carro de volta para 'Disponivel'."
+> "Para encerrar o ciclo do aluguel, registro a devolução via PUT. A API valida a quilometragem final para garantir que não seja inferior à inicial, calcula o valor financeiro multiplicando os dias pela diária da categoria do veículo, encerra o contrato e altera o status do carro de volta para 'Disponivel'."
 
 ---
 
@@ -136,39 +136,39 @@
 **`[Abrir Filtro 1: GET /api/Veiculos/disponiveis]`**  
 **`[Try it out -> categoriaId = 1, fabricanteId = 1 -> Execute]`**
 
-> "O Filtro 1 executa INNER JOIN entre Veículos, Categorias e Fabricantes, filtrando apenas veículos disponíveis conforme os parâmetros selecionados."
+> "No Filtro 1, programei um INNER JOIN entre Veículos, Categorias e Fabricantes, filtrando apenas veículos disponíveis conforme os parâmetros selecionados."
 
 **`[Abrir Filtro 2: GET /api/Alugueis/cliente/{clienteId}]`**  
 **`[Try it out -> clienteId = 1 -> Execute]`**
 
-> "O Filtro 2 realiza INNER JOIN entre Aluguéis, Clientes e Veículos, trazendo o extrato detalhado de locações do cliente com placa e modelo do automóvel."
+> "No Filtro 2, realizei um INNER JOIN entre Aluguéis, Clientes e Veículos, trazendo o extrato detalhado de locações do cliente com placa e modelo do automóvel."
 
 **`[Abrir Filtro 3: GET /api/Clientes/relatorio-locacoes]`**  
 **`[Try it out -> Execute direto]`**
 
-> "O Filtro 3 aplica LEFT JOIN entre Clientes e Aluguéis. Ele é essencial pois lista toda a base de clientes, inclusive aqueles com zero locações, calculando a quantidade de contratos e o valor total acumulado."
+> "No Filtro 3, apliquei um LEFT JOIN entre Clientes e Aluguéis. Ele é essencial pois lista toda a base de clientes, inclusive aqueles com zero locações, calculando a quantidade de contratos e o valor total acumulado."
 
 **`[Abrir Filtro 4: GET /api/Veiculos/relatorio-frota]`**  
 **`[Try it out -> Execute direto]`**
 
-> "O Filtro 4 combina LEFT JOIN e INNER JOIN para exibir a taxa de utilização da frota, trazendo dados de fabricante, categoria e o total acumulado de locações de cada carro."
+> "No Filtro 4, combinei LEFT JOIN e INNER JOIN para exibir a taxa de utilização da frota, trazendo dados de fabricante, categoria e o total acumulado de locações de cada carro."
 
 **`[Abrir Filtro 5: GET /api/Alugueis/status-pagamento]`**  
 **`[Try it out -> statusPagamento = Pendente -> Execute]`**
 
-> "E o Filtro 5 faz LEFT JOIN com Pagamentos e INNER JOIN com Clientes e Veículos para auditar os contratos quitados ou pendentes de pagamento."
+> "E no Filtro 5, fiz um LEFT JOIN com Pagamentos e INNER JOIN com Clientes e Veículos para auditar os contratos quitados ou pendentes de pagamento."
 
 ---
 
 ### Bloco 4: Conclusões e Encerramento (07:30 a 08:30)
 
-**`[Alt + Tab: Voltar para o VS Code - mostrando o projeto]`**
+**`[Alt + Tab: Voltar para o VS Code - mostrando a raiz do projeto]`**
 
-> "Como considerações finais, a aplicação atingiu plenamente todos os objetivos estabelecidos:
-> - Modelagem relacional consistente e íntegra com SQL Server Express;
-> - Arquitetura em camadas limpas, desacopladas e fortemente tipadas com .NET 8 e C#;
+> "Como considerações finais, a aplicação atingiu plenamente todos os requisitos propostos para o projeto:
+> - Modelagem relacional consistente que estruturei com integridade referencial;
+> - Arquitetura em camadas limpas e fortemente tipadas que implementei com .NET 8 e C#;
 > - APIs RESTful completas com validações estritas em DTOs e códigos de status HTTP semânticos;
 > - Consultas avançadas eficientes aplicando INNER JOIN e LEFT JOIN;
 > - E documentação viva e testes interativos centralizados via Swagger.
 >
-> Agradeço a atenção do senhor, professor, e todas as orientações ao longo do desenvolvimento deste projeto. Muito obrigado!"
+> Agradeço a atenção do senhor, professor, e todas as orientações ao longo do desenvolvimento deste trabalho. Muito obrigado!"

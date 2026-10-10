@@ -20,6 +20,7 @@ O projeto segue a divisão em camadas:
 - **Relatório de Testes:** [docs/RELATORIO_DE_TESTES.md](docs/RELATORIO_DE_TESTES.md)
 - **Script SQL para Banco de Dados:** [docs/script_banco_sql_express.sql](docs/script_banco_sql_express.sql)
 - **Evidências do Swagger UI:** [docs/screenshots/](docs/screenshots/)
+- **Roteiro da Apresentação em Vídeo (Pitch):** [docs/ROTEIRO_APRESENTACAO.md](docs/ROTEIRO_APRESENTACAO.md)
 
 ---
 
@@ -120,3 +121,12 @@ Ou execute o script SQL em `docs/script_banco_sql_express.sql`.
 dotnet run --project src/LocadoraVeiculos.Api
 ```
 O Swagger estará acessível em: `http://localhost:5000/swagger` ou `https://localhost:5001/swagger`.
+
+---
+
+## Etapa 4 - Apresentação e Demonstração do Projeto (Pitch)
+
+A Etapa 4 contempla a apresentação gravada em vídeo (duração de 6 a 12 minutos), demonstrando a contextualização do problema, a modelagem conceitual/relacional do banco de dados, a arquitetura backend em camadas e a execução prática ao vivo dos endpoints CRUD e dos 5 filtros avançados no Swagger UI.
+
+- **Roteiro Completo Fala a Fala da Apresentação:** [docs/ROTEIRO_APRESENTACAO.md](docs/ROTEIRO_APRESENTACAO.md)
+- **Link do Vídeo da Apresentação:** `[Inserir o link do vídeo gravado (YouTube / Google Drive / Teams)]`

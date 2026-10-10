@@ -1,73 +1,99 @@
-# Roteiro de Apresentação do Projeto - Pitch Completo
+# Roteiro Master de Apresentação do Projeto (Pitch Completo)
 
-**Projeto:** Sistema de Gerenciamento de Locadora de Veículos (API RESTful)  
+**Projeto:** Sistema de Gerenciamento de Locadora de Veículos (API RESTful em .NET 8 / C#)  
 **Aluno:** Vitor Schmidt Ribeiro  
-**Tempo estimado de gravação:** 8 a 10 minutos (faixa exigida: 6 a 12 minutos)
+**Tempo estimado total:** 8 a 9 minutos (faixa exigida pela disciplina: 6 a 12 minutos)
 
 ---
 
-## 1. Preparação da Tela Antes de Iniciar a Gravação
+## 1. Organização das Janelas na Tela (Antes de Iniciar a Gravação)
 
-Deixe abertas as duas janelas que você já preparou:
-1. **VS Code:** Com o repositório aberto, mostrando na barra lateral as pastas da solução (`Domain`, `Infrastructure`, `Api`, `docs`) e o arquivo `docs/MODELO_CONCEITUAL.md` aberto no editor.
-2. **Navegador (Swagger UI):** Aberto em `http://localhost:5097/swagger/index.html` com os controladores carregados.
+Deixe as duas janelas prontas na sua área de trabalho:
+1. **VS Code:** Repositório aberto com a barra lateral evidenciando a divisão em camadas (`Domain`, `Infrastructure`, `Api`, `docs`) e o arquivo `docs/MODELO_CONCEITUAL.md` aberto no editor com a lista de entidades e relacionamentos visível.
+2. **Navegador (Google Chrome):** Aberto no Swagger UI em `http://localhost:5097/swagger/index.html` com a aplicação já em execução.
 
----
-
-## 2. Roteiro Passo a Passo de Gravação e Fala
+*Dica para a gravação:* Comece gravando o **VS Code**, use `Alt + Tab` para alternar fluidamente para o **Swagger** no momento dos testes práticos, e no final dê `Alt + Tab` de volta para o **VS Code** para encerrar.
 
 ---
 
-### Bloco 1: Introdução, Apresentação e Visão Geral (00:00 - 01:30)
+## 2. Cronograma e Estrutura dos Blocos
+
+* **Bloco 1 (00:00 - 01:15):** Abertura, Contexto do Negócio e Apresentação das Telas (1m15s)
+* **Bloco 2 (01:15 - 03:00):** Arquitetura Backend em Camadas e Modelagem Relacional DER (1m45s)
+* **Bloco 3 (03:00 - 07:30):** Demonstração Prática Completa no Swagger UI (4m30s)
+  - 3.1: Visão Geral OpenAPI e Schemas
+  - 3.2: Gestão de Clientes (GET e POST)
+  - 3.3: Consulta da Frota de Veículos (GET)
+  - 3.4: Abertura de Locação e Teste de Bloqueio de Regra (Erro 400 Bad Request)
+  - 3.5: Devolução de Veículo e Cálculo de Diárias (PUT)
+  - 3.6: Execução dos 5 Filtros Avançados com Joins (INNER JOIN e LEFT JOIN)
+* **Bloco 4 (07:30 - 08:30):** Boas Práticas, Conclusão e Encerramento (1m00s)
+
+---
+
+## 3. Roteiro Fala a Fala e Ações na Tela
+
+---
+
+### Bloco 1: Abertura, Contexto do Negócio e Visão Geral (00:00 a 01:15)
 
 * **O que mostrar na tela:**
-  Comece com a tela do **VS Code** aberta (mostrando a estrutura de pastas do projeto à esquerda) e, em seguida, alterne rapidamente para o **Swagger UI** no navegador, mostrando que a aplicação já está em execução.
+  Inicie com o **VS Code** maximizado, mostrando na barra lateral as pastas do projeto (`Domain`, `Infrastructure`, `Api`, `docs`). Logo após citar a execução da aplicação, dê um `Alt + Tab` rápido para o **Swagger UI** no navegador mostrando a API ativa na porta 5097, e depois volte para o VS Code.
 
 * **O que falar:**
   > "Olá, professor! Meu nome é Vitor Schmidt Ribeiro e hoje vou apresentar o projeto completo do Sistema de Gerenciamento de Locadora de Veículos.
   >
-  > O objetivo principal deste projeto foi desenvolver uma solução de backend robusta para controlar todo o fluxo operacional de uma locadora de automóveis. A aplicação gerencia desde o controle de frota — organizando montadoras, categorias e veículos —, até a base de clientes, contratos de aluguel com cálculo de diárias e devolução, e o acompanhamento dos pagamentos.
+  > O objetivo central deste projeto foi conceber e construir uma solução robusta de backend voltada para gerenciar todo o ciclo operacional de uma locadora. A solução atende o controle detalhado de frota — organizando montadoras, categorias e veículos —, a gestão cadastral de clientes com checagem de documentos como CPF e CNH, a emissão de contratos de locação com cálculo de diárias e quilometragem, além do controle rigoroso de devoluções e situação dos pagamentos.
   >
-  > Como o senhor pode ver aqui no VS Code, a solução foi construída em C# com a plataforma .NET 8, estruturada em camadas bem definidas para garantir separação de responsabilidades. Para persistência de dados, utilizamos o Entity Framework Core 8 com banco de dados SQL Server Express, aplicando mapeamentos explícitos via Fluent API e migrações.
+  > Como o senhor pode ver aqui no VS Code, a aplicação foi desenvolvida em C# na plataforma .NET 8, com o Entity Framework Core 8 para persistência relacional no SQL Server Express e Swagger para documentação OpenAPI.
   >
-  > E aqui no navegador, temos a documentação interativa e os testes dos endpoints totalmente integrados através do Swagger e OpenAPI."
+  > E aqui no navegador, a nossa API já se encontra em execução e pronta para consumo."
 
 ---
 
-### Bloco 2: Arquitetura em Camadas e Modelagem do Banco de Dados (01:30 - 03:30)
+### Bloco 2: Arquitetura Backend e Modelagem Relacional DER (01:15 a 03:00)
 
 * **O que mostrar na tela:**
-  Volte para o **VS Code** com o arquivo `docs/MODELO_CONCEITUAL.md` em foco, destacando a lista das 6 entidades e a árvore de pastas à esquerda (`src/LocadoraVeiculos.Domain`, `Infrastructure`, `Api`).
+  No **VS Code**, mantenha em foco o arquivo `docs/MODELO_CONCEITUAL.md` (mostrando a lista das 6 entidades e a descrição relacional) e aponte para a estrutura de pastas em `src/`.
 
 * **O que falar:**
-  > "Passando para a arquitetura do projeto, organizamos o backend em três camadas principais:
-  > - O projeto **Domain**, onde residem as entidades e enums de negócio puros, sem nenhuma dependência externa;
-  > - O projeto **Infrastructure**, responsável pela persistência com o DbContext, configurações Fluent API, integridade relacional e migrations;
-  > - E o projeto **Api**, onde ficam os controladores RESTful, DTOs de entrada e saída com Data Annotations e tratamento global de erros.
+  > "Passando para a arquitetura do sistema, adotamos o padrão de divisão em camadas desacopladas para manter alta coesão e baixo acoplamento:
+  > - O projeto **LocadoraVeiculos.Domain**: contém as entidades puras e os enums de negócio, totalmente independentes de frameworks;
+  > - O projeto **LocadoraVeiculos.Infrastructure**: gerencia o acesso a dados via Entity Framework Core, mapeamentos explícitos com Fluent API, integridade relacional, índices e migrações;
+  > - E o projeto **LocadoraVeiculos.Api**: expõe os controladores RESTful, DTOs de entrada e saída com validação declarativa e middlewares de tratamento de exceções.
   >
-  > Para o modelo de dados, estruturamos 6 entidades centrais:
-  > 1. **Fabricante**: Cadastro das montadoras dos carros;
+  > Para a modelagem relacional, nós estruturamos o banco com 6 entidades principais:
+  > 1. **Fabricante**: Cadastro das montadoras (como Volkswagen, Chevrolet, Fiat);
   > 2. **Categoria**: Classificação dos veículos (Econômico, Sedã, SUV), onde fica o valor base da diária;
-  > 3. **Veículo**: O ativo da locadora, vinculado a fabricante e categoria, com placa única, quilometragem e controle de status (Disponível, Alugado ou Em Manutenção);
-  > 4. **Cliente**: Registro do locatário, com validação de unicidade de CPF, e-mail e CNH;
-  > 5. **Aluguel**: O contrato central que conecta o Cliente ao Veículo, guardando datas de retirada e devolução, quilometragens inicial e final, e o valor total;
-  > 6. **Pagamento**: Registro financeiro do aluguel, contendo forma de pagamento e situação da transação."
+  > 3. **Veículo**: O ativo físico da frota, com placa única, ano, quilometragem e controle de status operacional (Disponível, Alugado ou Em Manutenção);
+  > 4. **Cliente**: Registro do locatário com regras de unicidade para CPF, e-mail e CNH;
+  > 5. **Aluguel**: O contrato central associando Cliente e Veículo, contendo data de retirada, data prevista, devolução, quilometragem inicial e final, e o valor total;
+  > 6. **Pagamento**: Registro financeiro do contrato com método e status da transação."
 
 ---
 
-### Bloco 3: Demonstração Prática no Swagger UI (03:30 - 08:00)
+### Bloco 3: Demonstração Prática Completa no Swagger UI (03:00 a 07:30)
 
 * **O que mostrar na tela:**
-  Alterne para o navegador com o **Swagger UI** (`localhost:5097/swagger/index.html`).
+  Dê `Alt + Tab` e permaneça no navegador com o **Swagger UI** (`localhost:5097/swagger/index.html`).
 
+---
+
+#### 3.1. Visão Geral da Documentação e Schemas (03:00 - 03:30)
+* **Ação na tela:**
+  Role a página do Swagger mostrando as tags organizadas e depois desça rapidamente até o rodapé mostrando a seção **Schemas**.
 * **O que falar:**
-  > "Agora vamos para a demonstração prática da API em execução através do Swagger."
+  > "Aqui no Swagger temos a documentação interativa da API. Cada endpoint conta com sumário em português vindo de comentários XML no C#, mapeamento de códigos de retorno com ProducesResponseType — incluindo sucessos e erros como 400 Bad Request e 404 Not Found — e, aqui no final da página, temos os Schemas documentando todos os tipos de dados dos DTOs.
+  >
+  > Vamos agora iniciar os testes práticos do ciclo de negócio."
 
-#### 1. Demonstração de CRUD (Clientes)
+---
+
+#### 3.2. Gestão de Clientes (03:30 - 04:15)
 * **Ação no Swagger:**
-  1. Abra a seção **Clientes** $ightarrow$ `GET /api/Clientes`.
-  2. Clique em **Try it out** $ightarrow$ **Execute**. Mostre o retorno HTTP 200 com a lista de clientes.
-  3. Abra `POST /api/Clientes`, clique em **Try it out** e execute com o JSON:
+  1. Abra a tag **Clientes** $ightarrow$ `GET /api/Clientes` $ightarrow$ **Try it out** $ightarrow$ **Execute**.
+     * Mostre o retorno HTTP 200 com os clientes já semeados.
+  2. Abra `POST /api/Clientes` $ightarrow$ **Try it out** $ightarrow$ Cole o payload:
      ```json
      {
        "nome": "Carlos Eduardo",
@@ -77,14 +103,25 @@ Deixe abertas as duas janelas que você já preparou:
        "cnh": "99887766554"
      }
      ```
-  4. Mostre a resposta HTTP 201 Created.
+  3. Clique em **Execute** e mostre a resposta **HTTP 201 Created**.
 * **O que falar:**
-  > "Aqui em Clientes temos o CRUD completo. Executando o GET, vemos a lista retornada com código 200. Ao cadastrar um novo cliente via POST, a API valida formato e duplicidade de CPF e CNH, retornando HTTP 201 Created com o recurso criado."
+  > "No controlador de Clientes, realizamos a consulta via GET recebendo 200 OK. Ao cadastrar um novo cliente via POST, a API executa validações de formato e integridade no CPF e CNH, persistindo o registro no banco com código HTTP 201 Created."
 
-#### 2. Regra de Negócio: Locação e Devolução de Veículo
+---
+
+#### 3.3. Consulta da Frota de Veículos (04:15 - 04:45)
 * **Ação no Swagger:**
-  1. Vá até a seção **Alugueis** $ightarrow$ `POST /api/Alugueis`.
-  2. Clique em **Try it out**, preencha e execute:
+  1. Vá até a tag **Veiculos** $ightarrow$ `GET /api/Veiculos` $ightarrow$ **Try it out** $ightarrow$ **Execute**.
+  2. Aponte no JSON retornado para o **Veículo ID 1** (Gol 1.0, Placa ABC1D23) destacando que o status atual é `Disponivel` e a quilometragem é 45000.
+* **O que falar:**
+  > "No endpoint de Veículos, consultamos a frota ativa da locadora. Repare que o Veículo de ID 1, o Gol 1.0, está atualmente com status 'Disponivel' e 45 mil quilômetros rodados."
+
+---
+
+#### 3.4. Ciclo de Locação e Teste de Bloqueio de Regra - Erro 400 (04:45 - 05:45)
+* **Ação no Swagger:**
+  1. Vá até a tag **Alugueis** $ightarrow$ `POST /api/Alugueis` $ightarrow$ **Try it out**.
+  2. Preencha os campos para alugar o Veículo 1 para o Cliente 1:
      ```json
      {
        "clienteId": 1,
@@ -92,58 +129,70 @@ Deixe abertas as duas janelas que você já preparou:
        "dataPrevistaDevolucao": "2026-10-15T18:00:00"
      }
      ```
-  3. Mostre o retorno HTTP 201 Created com o status `Ativo` e anote o `id` gerado (ex.: 3).
-  4. Abra `PUT /api/Alugueis/{id}/devolucao`.
-  5. Coloque o ID da locação e no corpo:
-     ```json
-     {
-       "quilometragemFinal": 45350,
-       "observacoes": "Veículo devolvido no prazo e com tanque cheio."
-     }
-     ```
-  6. Clique em **Execute** e mostre a resposta HTTP 200 com o cálculo financeiro das diárias e a devolução concluída.
+  3. Clique em **Execute**. Mostre o retorno **HTTP 201 Created** com status `Ativo` e anote o ID do aluguel gerado (ex.: ID 3).
+  4. **O Teste de Erro de Negócio:** Sem mudar nada no formulário, clique em **Execute novamente**.
+  5. Mostre na tela a resposta imediata de **HTTP 400 Bad Request** com a mensagem informando que o veículo já se encontra alugado.
 * **O que falar:**
-  > "No fluxo de aluguel, temos regras de negócio críticas: ao abrir uma locação via POST, a API verifica se o veículo está disponível. Se estiver, cria o contrato com status Ativo e atualiza o veículo para Alugado, impedindo que seja alugado duas vezes.
+  > "Agora vamos abrir um aluguel para o Cliente 1 utilizando o Veículo 1. Ao executar o POST, a API cria o contrato com status Ativo e atualiza o veículo para 'Alugado', retornando 201 Created.
   >
-  > Na devolução, através do PUT, o sistema valida se a quilometragem final não é menor que a inicial, encerra o aluguel, calcula o valor total com base na diária da categoria e libera o veículo de volta para o status Disponível."
-
-#### 3. Os 5 Endpoints com Filtros e Joins
-* **Ação no Swagger:**
-  Demonstre as 5 consultas avançadas solicitadas no projeto:
-
-  * **Filtro 1:** `GET /api/Veiculos/disponiveis`
-    * Preencha `categoriaId = 1`, `fabricanteId = 1` $ightarrow$ **Execute**.
-    * **Fala:** *"O Filtro 1 executa um INNER JOIN entre Veículos, Categorias e Fabricantes, filtrando os carros disponíveis no pátio conforme o fabricante e categoria escolhidos."*
-
-  * **Filtro 2:** `GET /api/Alugueis/cliente/{clienteId}`
-    * Preencha `clienteId = 1` $ightarrow$ **Execute**.
-    * **Fala:** *"O Filtro 2 realiza INNER JOIN entre Aluguéis, Clientes e Veículos, trazendo o extrato detalhado de locações de um cliente com o modelo e a placa do carro alugado."*
-
-  * **Filtro 3:** `GET /api/Clientes/relatorio-locacoes`
-    * Clique em **Execute**.
-    * **Fala:** *"O Filtro 3 utiliza um LEFT JOIN entre Clientes e Aluguéis. Ele lista todos os clientes da base, inclusive aqueles que ainda não alugaram nenhum veículo, exibindo a contagem de contratos e o valor total gasto por cada um."*
-
-  * **Filtro 4:** `GET /api/Veiculos/relatorio-frota`
-    * Clique em **Execute**.
-    * **Fala:** *"O Filtro 4 combina LEFT JOIN e INNER JOIN para exibir a taxa de utilização da frota, trazendo dados de fabricante, categoria e o total acumulado de locações de cada automóvel."*
-
-  * **Filtro 5:** `GET /api/Alugueis/status-pagamento`
-    * Preencha `statusPagamento = Pendente` ou `Aprovado` $ightarrow$ **Execute**.
-    * **Fala:** *"E o Filtro 5 faz LEFT JOIN com a tabela de Pagamentos e INNER JOIN com Clientes e Veículos para auditar a situação financeira dos contratos, identificando aluguéis pagos ou com pendências."*
+  > E para demonstrar a consistência das regras de negócio: se tentarmos abrir uma nova locação para esse mesmo veículo imediatamente... ao clicar em Execute, a API bloqueia a operação retornando HTTP 400 Bad Request, informando que o veículo já está alugado. Isso impede qualquer duplicidade no pátio."
 
 ---
 
-### Bloco 4: Conclusões e Encerramento (08:00 - 09:30)
+#### 3.5. Devolução de Veículo e Cálculo de Diárias (05:45 - 06:30)
+* **Ação no Swagger:**
+  1. Abra `PUT /api/Alugueis/{id}/devolucao` $ightarrow$ **Try it out**.
+  2. No campo `id`, coloque o ID do aluguel criado (ex.: `3`).
+  3. No corpo da requisição, envie a quilometragem final e observação:
+     ```json
+     {
+       "quilometragemFinal": 45350,
+       "observacoes": "Devolução realizada no prazo e com tanque cheio."
+     }
+     ```
+  4. Clique em **Execute** e mostre a resposta **HTTP 200 OK** com o valor total calculado e o status finalizado.
+* **O que falar:**
+  > "Para finalizar o ciclo do aluguel, vamos registrar a devolução via PUT. A API valida se a quilometragem final não é inferior à inicial, calcula o valor financeiro total multiplicando os dias pela diária da categoria, encerra o contrato e altera o status do veículo de volta para 'Disponivel' para novos clientes."
+
+---
+
+#### 3.6. Demonstração dos 5 Filtros Avançados com Joins (06:30 - 07:30)
+* **Ação no Swagger:**
+  Execute sequencialmente os 5 filtros implementados conforme a especificação da disciplina:
+
+  * **Filtro 1:** `GET /api/Veiculos/disponiveis`
+    * Preencha `categoriaId = 1`, `fabricanteId = 1` $ightarrow$ **Execute**.
+    * **Fala:** *"O Filtro 1 executa INNER JOIN entre Veículos, Categorias e Fabricantes, filtrando apenas veículos disponíveis conforme os critérios escolhidos."*
+
+  * **Filtro 2:** `GET /api/Alugueis/cliente/{clienteId}`
+    * Preencha `clienteId = 1` $ightarrow$ **Execute**.
+    * **Fala:** *"O Filtro 2 realiza INNER JOIN entre Aluguéis, Clientes e Veículos, trazendo o extrato de locações do cliente com dados completos do automóvel."*
+
+  * **Filtro 3:** `GET /api/Clientes/relatorio-locacoes`
+    * Clique em **Execute** diretamente.
+    * **Fala:** *"O Filtro 3 aplica LEFT JOIN entre Clientes e Aluguéis. Isso permite listar toda a base de clientes, inclusive aqueles com zero locações, calculando o total de contratos e gastos."*
+
+  * **Filtro 4:** `GET /api/Veiculos/relatorio-frota`
+    * Clique em **Execute** diretamente.
+    * **Fala:** *"O Filtro 4 combina LEFT JOIN e INNER JOIN para traçar o desempenho da frota, exibindo montadora, categoria e o total acumulado de locações de cada carro."*
+
+  * **Filtro 5:** `GET /api/Alugueis/status-pagamento`
+    * Preencha `statusPagamento = Pendente` ou `Aprovado` $ightarrow$ **Execute**.
+    * **Fala:** *"E o Filtro 5 faz LEFT JOIN com Pagamentos e INNER JOIN com Clientes e Veículos para auditar os contratos quitados ou pendentes de pagamento."*
+
+---
+
+### Bloco 4: Conclusões Técnicas e Encerramento (07:30 a 08:30)
 
 * **O que mostrar na tela:**
-  Volte para o **VS Code** ou mostre a tela do repositório no GitHub.
+  Dê um `Alt + Tab` e volte para o **VS Code**, exibindo a raiz do projeto.
 
 * **O que falar:**
-  > "Para finalizar a apresentação, o projeto atendeu a todos os requisitos técnicos e de negócio:
-  > - Modelagem relacional consistente no SQL Server Express com integridade referencial;
-  > - Arquitetura em camadas desacopladas seguindo os padrões do .NET 8;
-  > - APIs RESTful completas com DTOs, validações e controle de status HTTP;
-  > - Consultas avançadas eficientes utilizando INNER JOIN e LEFT JOIN;
-  > - E documentação viva com testes interativos via Swagger.
+  > "Como considerações finais, a aplicação atingiu plenamente todos os objetivos estabelecidos:
+  > - Modelagem relacional consistente e íntegra com SQL Server Express;
+  > - Arquitetura em camadas limpas, desacopladas e fortemente tipadas com .NET 8 e C#;
+  > - APIs RESTful completas com validações estritas em DTOs e códigos de status HTTP semânticos;
+  > - Consultas avançadas eficientes aplicando INNER JOIN e LEFT JOIN;
+  > - E documentação viva e testes interativos centralizados via Swagger.
   >
-  > Agradeço a atenção do senhor, professor, e as orientações ao longo do desenvolvimento deste trabalho. Muito obrigado!"
+  > Agradeço a atenção do senhor, professor, e todas as orientações ao longo do desenvolvimento deste projeto. Muito obrigado!"

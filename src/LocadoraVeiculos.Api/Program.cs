@@ -9,7 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<LocadoraDbContext>(options =>
-    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("LocadoraVeiculos.Infrastructure")));
+{
+    if (connectionString != null && connectionString.StartsWith("Data Source="))
+        options.UseSqlite(connectionString);
+    else
+        options.UseSqlServer(connectionString, b => b.MigrationsAssembly("LocadoraVeiculos.Infrastructure"));
+});
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -38,19 +43,24 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+var conn = app.Configuration.GetConnectionString("DefaultConnection");
+if (conn != null && conn.StartsWith("Data Source="))
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<LocadoraDbContext>();
+    db.Database.EnsureCreated();
+}
+
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
-if (app.Environment.IsDevelopment())
+app.UseSwagger(c =>
 {
-    app.UseSwagger(c =>
-    {
-        c.SerializeAsV2 = true;
-    });
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Locadora de Veículos API v1");
-    });
-}
+    c.SerializeAsV2 = true;
+});
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Locadora de Veículos API v1");
+});
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

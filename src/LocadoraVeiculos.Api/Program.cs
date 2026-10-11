@@ -53,14 +53,17 @@ if (conn != null && conn.StartsWith("Data Source="))
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
-app.UseSwagger(c =>
+if (app.Environment.IsDevelopment())
 {
-    c.SerializeAsV2 = true;
-});
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Locadora de Veículos API v1");
-});
+    app.UseSwagger(c =>
+    {
+        c.SerializeAsV2 = true;
+    });
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Locadora de Veículos API v1");
+    });
+}
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

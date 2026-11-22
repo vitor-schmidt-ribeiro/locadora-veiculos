@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800">
+  <rect width="1280" height="800" fill="#f8fafc"/>
+  <rect width="250" height="800" fill="#1e293b"/>
+  <text x="40" y="49" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="bold">LOCADORA DE VEÍCULOS</text>
+  <text x="48" y="114" fill="#94a3b8" font-family="sans-serif" font-size="13">Dashboard</text>
+  <text x="48" y="159" fill="#94a3b8" font-family="sans-serif" font-size="13">Clientes (CRUD)</text>
+  <text x="48" y="204" fill="#94a3b8" font-family="sans-serif" font-size="13">Veículos (Frota)</text>
+  <text x="48" y="249" fill="#94a3b8" font-family="sans-serif" font-size="13">Aluguéis &amp; Devoluções</text>
+  <rect x="16" y="270" width="218" height="38" rx="6" fill="#2563eb"/>
+  <text x="48" y="294" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold">Consultas Avançadas</text>
+  
+  <rect x="250" width="1030" height="70" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="280" y="42" fill="#0f172a" font-family="sans-serif" font-size="18" font-weight="bold">Painel de Consultas Avançadas (Relatórios com Joins)</text>
+  
+  <rect x="280" y="100" width="970" height="660" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  
+  <!-- Tabs Navigation -->
+  <rect x="310" y="125" width="170" height="36" rx="6" fill="#2563eb"/>
+  <text x="330" y="148" fill="#ffffff" font-family="sans-serif" font-size="11" font-weight="bold">1. Veículos Disponíveis</text>
+  
+  <rect x="490" y="125" width="170" height="36" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="505" y="148" fill="#475569" font-family="sans-serif" font-size="11">2. Histórico do Cliente</text>
+  
+  <rect x="670" y="125" width="170" height="36" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="685" y="148" fill="#475569" font-family="sans-serif" font-size="11">3. Relatório de Clientes</text>
+  
+  <rect x="850" y="125" width="170" height="36" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="865" y="148" fill="#475569" font-family="sans-serif" font-size="11">4. Desempenho da Frota</text>
+  
+  <rect x="1030" y="125" width="170" height="36" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="1045" y="148" fill="#475569" font-family="sans-serif" font-size="11">5. Situação Financeira</text>
+  
+  <!-- Tab Filter Controls -->
+  <rect x="310" y="180" width="910" height="60" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="330" y="215" fill="#334155" font-family="sans-serif" font-size="12" font-weight="bold">INNER JOIN: Filtrar por Categoria e Fabricante</text>
+  <rect x="630" y="193" width="180" height="34" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="645" y="215" fill="#64748b" font-family="sans-serif" font-size="11">Todas as Categorias</text>
+  <rect x="825" y="193" width="180" height="34" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="840" y="215" fill="#64748b" font-family="sans-serif" font-size="11">Todos os Fabricantes</text>
+  <rect x="1020" y="193" width="90" height="34" rx="4" fill="#2563eb"/>
+  <text x="1043" y="215" fill="#ffffff" font-family="sans-serif" font-size="11" font-weight="bold">Consultar</text>
+  
+  <!-- Results Table -->
+  <rect x="310" y="260" width="910" height="40" fill="#f1f5f9"/>
+  <text x="330" y="285" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">MODELO DO VEÍCULO</text>
+  <text x="560" y="285" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">PLACA</text>
+  <text x="690" y="285" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">FABRICANTE</text>
+  <text x="860" y="285" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">CATEGORIA</text>
+  <text x="1080" y="285" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">DIÁRIA (R$)</text>
+  
+  <rect x="310" y="310" width="910" height="45" fill="#ffffff" stroke="#f1f5f9"/>
+  <text x="330" y="338" fill="#1e293b" font-family="sans-serif" font-size="12">Polo Track 1.0</text>
+  <text x="560" y="338" fill="#1e293b" font-family="sans-serif" font-size="12">ABC1D23</text>
+  <text x="690" y="338" fill="#1e293b" font-family="sans-serif" font-size="12">Volkswagen</text>
+  <text x="860" y="338" fill="#1e293b" font-family="sans-serif" font-size="12">Econômico</text>
+  <text x="1080" y="338" fill="#1e293b" font-family="sans-serif" font-size="12" font-weight="bold">R$ 110,00</text>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800">
+  <rect width="1280" height="800" fill="#f8fafc"/>
+  <rect width="250" height="800" fill="#1e293b"/>
+  <text x="40" y="49" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="bold">LOCADORA DE VEÍCULOS</text>
+  <text x="48" y="114" fill="#94a3b8" font-family="sans-serif" font-size="13">Dashboard</text>
+  <text x="48" y="159" fill="#94a3b8" font-family="sans-serif" font-size="13">Clientes (CRUD)</text>
+  <text x="48" y="204" fill="#94a3b8" font-family="sans-serif" font-size="13">Veículos (Frota)</text>
+  <rect x="16" y="225" width="218" height="38" rx="6" fill="#2563eb"/>
+  <text x="48" y="249" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold">Aluguéis &amp; Devoluções</text>
+  
+  <rect x="250" width="1030" height="70" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="280" y="42" fill="#0f172a" font-family="sans-serif" font-size="18" font-weight="bold">Gestão de Contratos de Locação</text>
+  
+  <rect x="280" y="100" width="970" height="660" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  
+  <!-- Search Filters (2 fields) -->
+  <rect x="310" y="125" width="280" height="38" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="325" y="149" fill="#94a3b8" font-family="sans-serif" font-size="12">Filtrar por Cliente...</text>
+  
+  <rect x="605" y="125" width="200" height="38" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="620" y="149" fill="#94a3b8" font-family="sans-serif" font-size="12">Todos os Status (Ativo/Finalizado)</text>
+  
+  <rect x="820" y="125" width="80" height="38" rx="6" fill="#334155"/>
+  <text x="840" y="149" fill="#ffffff" font-family="sans-serif" font-size="12" font-weight="bold">Filtrar</text>
+  
+  <rect x="1070" y="125" width="150" height="38" rx="6" fill="#2563eb"/>
+  <text x="1090" y="149" fill="#ffffff" font-family="sans-serif" font-size="12" font-weight="bold">+ Nova Locação</text>
+  
+  <!-- Table Header -->
+  <rect x="310" y="185" width="910" height="40" fill="#f1f5f9"/>
+  <text x="330" y="210" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">ID</text>
+  <text x="380" y="210" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">CLIENTE</text>
+  <text x="540" y="210" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">VEÍCULO ALUGADO</text>
+  <text x="740" y="210" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">RETIRADA</text>
+  <text x="850" y="210" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">PREVISÃO</text>
+  <text x="960" y="210" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">STATUS</text>
+  <text x="1080" y="210" fill="#475569" font-family="sans-serif" font-size="12" font-weight="bold">AÇÃO</text>
+  
+  <!-- Table Row -->
+  <rect x="310" y="235" width="910" height="55" fill="#ffffff" stroke="#f1f5f9"/>
+  <text x="330" y="268" fill="#1e293b" font-family="sans-serif" font-size="12">1</text>
+  <text x="380" y="268" fill="#1e293b" font-family="sans-serif" font-size="12">Carlos Eduardo Silva</text>
+  <text x="540" y="268" fill="#1e293b" font-family="sans-serif" font-size="12">Corolla XEi 2.0 (BRA2E19)</text>
+  <text x="740" y="268" fill="#1e293b" font-family="sans-serif" font-size="12">01/03/2026</text>
+  <text x="850" y="268" fill="#1e293b" font-family="sans-serif" font-size="12">05/03/2026</text>
+  <rect x="950" y="254" width="70" height="22" rx="11" fill="#fef3c7"/>
+  <text x="968" y="269" fill="#92400e" font-family="sans-serif" font-size="10" font-weight="bold">Ativo</text>
+  <rect x="1055" y="250" width="105" height="28" rx="4" fill="#10b981"/>
+  <text x="1068" y="268" fill="#ffffff" font-family="sans-serif" font-size="11" font-weight="bold">Registrar Devolução</text>
+</svg>

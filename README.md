@@ -126,3 +126,35 @@ O Swagger estará acessível em: `http://localhost:5000/swagger` ou `https://loc
 ## Etapa 4 - Apresentação do Projeto (Vídeo)
 
 - **Link do Vídeo da Apresentação:** `[Inserir o link do vídeo gravado (YouTube / Google Drive / Teams)]`
+
+---
+
+## Trabalho Prático 2 - Front-end Integrado
+
+O Trabalho Prático 2 contempla a camada de apresentação responsiva (Single Page Application em HTML5, CSS3, Bootstrap 5 e JavaScript Vanilla) conectada à API RESTful em .NET 8.
+
+### Funcionalidades do Front-end
+- **Dashboard Operacional:** Indicadores em tempo real (Total de Clientes, Frota, Aluguéis Ativos e Faturamento).
+- **CRUDs Completos:** Telas e modais para Fabricantes, Categorias, Veículos, Clientes e Aluguéis/Devoluções.
+- **Buscas com Filtros Duplos:** Pesquisa parametrizada em pelo menos dois campos por entidade (ex.: Nome e CPF; Modelo e Placa; Cliente e Status).
+- **Painel de Consultas Avançadas:** Visualização interativa dos 5 relatórios analíticos utilizando junções relacionais (INNER JOIN e LEFT JOIN).
+
+### Estrutura de Documentação do TP2
+- **Wireframes:** Arquivos vetoriais em `docs/wireframes/` e guia de importação no Figma em `docs/WIREFRAMES.md`.
+- **Artigo Científico (Padrão SBC):** Projeto LaTeX completo e pacote de estilos em `docs/artigo_sbc/artigo_sbc.tex`.
+- **Capturas de Tela da Aplicação:** `docs/screenshots/frontend/`.
+
+### Como Executar o Front-end
+1. Inicie a API backend:
+   ```bash
+   dotnet run --project src/LocadoraVeiculos.Api
+   ```
+2. Abra o arquivo `frontend/index.html` diretamente no navegador ou execute um servidor estático local:
+   ```bash
+   cd frontend
+   python3 -m http.server 3000
+   ```
+   Acesse: `http://localhost:3000`.
+
+### Apresentação em Vídeo (Pitch - 3 a 5 Minutos)
+- **Link do Vídeo do Pitch (TP2):** `[Inserir o link do vídeo gravado (YouTube / Google Drive / Teams)]`

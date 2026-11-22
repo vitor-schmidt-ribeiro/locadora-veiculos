@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Gerenciamento de Locadora de Veículos</title>
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Estilos Customizados -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- SIDEBAR FIXA -->
+  <nav id="sidebar">
+    <div class="brand">
+      <span>🚗</span> LOCADORA VEÍCULOS
+    </div>
+
+    <div class="nav-menu">
+      <a class="nav-link active" data-view="dashboard">
+        <span>📊</span> Dashboard
+      </a>
+      <a class="nav-link" data-view="clientes">
+        <span>👥</span> Clientes (CRUD)
+      </a>
+      <a class="nav-link" data-view="veiculos">
+        <span>🚘</span> Veículos (Frota)
+      </a>
+      <a class="nav-link" data-view="alugueis">
+        <span>📝</span> Aluguéis & Devoluções
+      </a>
+      <a class="nav-link" data-view="fabricantes-categorias">
+        <span>🏭</span> Fabricantes & Categorias
+      </a>
+      <a class="nav-link" data-view="consultas">
+        <span>🔍</span> Consultas Avançadas
+      </a>
+    </div>
+
+    <div class="user-footer">
+      <div><strong>Vitor Schmidt</strong></div>
+      <div class="text-muted" style="font-size: 0.75rem;">Programação Back-End</div>
+    </div>
+  </nav>
+
+  <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
+  <main id="main-content">
+
+    <!-- 1. VIEW: DASHBOARD -->
+    <section id="view-dashboard" class="view-section">
+      <div class="topbar">
+        <h1 class="page-title">Painel de Controle e Métricas</h1>
+        <button class="btn btn-sm btn-outline-secondary" onclick="loadInitialData().then(renderDashboard)">
+          Atualizar Dados
+        </button>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-3">
+          <div class="card stat-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-muted small">Total de Clientes</div>
+                <div class="fs-3 fw-bold" id="dash-total-clientes">0</div>
+              </div>
+              <div class="stat-icon bg-primary-subtle text-primary">👥</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-muted small">Frota Cadastrada</div>
+                <div class="fs-3 fw-bold" id="dash-total-veiculos">0</div>
+              </div>
+              <div class="stat-icon bg-info-subtle text-info">🚘</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-muted small">Veículos Alugados</div>
+                <div class="fs-3 fw-bold text-warning" id="dash-veiculos-alugados">0</div>
+              </div>
+              <div class="stat-icon bg-warning-subtle text-warning">🔑</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-muted small">Faturamento Concluído</div>
+                <div class="fs-3 fw-bold text-success" id="dash-faturamento">R$ 0,00</div>
+              </div>
+              <div class="stat-icon bg-success-subtle text-success">💰</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabelas & Painel de Frota -->
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="card p-3">
+            <h5 class="card-title fw-bold mb-3">Últimas Locações Registradas</h5>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Veículo</th>
+                    <th>Data Retirada</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-recentes-corpo">
+                  <tr><td colspan="5" class="text-center text-muted">Carregando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card p-3 h-100">
+            <h5 class="card-title fw-bold mb-3">Status da Frota</h5>
+            <p class="text-muted small">Visão de disponibilidade dos veículos no pátio.</p>
+            <div class="p-3 bg-light rounded text-center my-auto">
+              <div class="fs-1 fw-bold text-success" id="dash-veiculos-disponiveis">0</div>
+              <div class="text-muted">Veículos Disponíveis para Locação</div>
+            </div>
+            <div class="mt-3">
+              <button class="btn btn-outline-primary w-100" onclick="showView('consultas')">
+                Ver Relatórios Avançados (Joins)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. VIEW: CLIENTES (CRUD + 2 Filtros) -->
+    <section id="view-clientes" class="view-section d-none">
+      <div class="topbar">
+        <h1 class="page-title">Gestão de Clientes</h1>
+        <button class="btn btn-primary" onclick="abrirModalNovoCliente()">
+          + Novo Cliente
+        </button>
+      </div>
+
+      <!-- Barra de Filtros Personalizados em 2 Campos -->
+      <div class="filter-box">
+        <div class="row g-2 align-items-center">
+          <div class="col-md-5">
+            <label class="form-label small fw-bold text-muted mb-1">Filtrar por Nome:</label>
+            <input type="text" id="filtro-cliente-nome" class="form-control form-control-sm" placeholder="Digite para filtrar por nome...">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-muted mb-1">Filtrar por CPF:</label>
+            <input type="text" id="filtro-cliente-cpf" class="form-control form-control-sm" placeholder="Digite o CPF...">
+          </div>
+          <div class="col-md-3 text-end pt-3">
+            <button class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('filtro-cliente-nome').value=''; document.getElementById('filtro-cliente-cpf').value=''; renderClientes();">
+              Limpar Filtros
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela de Clientes -->
+      <div class="card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="fw-bold mb-0">Base de Clientes Cadastrados</h6>
+          <span class="badge bg-primary" id="badge-total-clientes">0 cliente(s)</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome Completo</th>
+                <th>CPF</th>
+                <th>CNH</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th class="text-end">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-clientes-corpo">
+              <tr><td colspan="7" class="text-center text-muted">Carregando clientes...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. VIEW: VEÍCULOS (CRUD + 2 Filtros: Modelo e Placa + Categoria) -->
+    <section id="view-veiculos" class="view-section d-none">
+      <div class="topbar">
+        <h1 class="page-title">Controle de Frota de Veículos</h1>
+        <button class="btn btn-primary" onclick="abrirModalNovoVeiculo()">
+          + Novo Veículo
+        </button>
+      </div>
+
+      <!-- Barra de Filtros Personalizados em 2 Campos -->
+      <div class="filter-box">
+        <div class="row g-2 align-items-center">
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-muted mb-1">Filtrar por Modelo:</label>
+            <input type="text" id="filtro-veiculo-modelo" class="form-control form-control-sm" placeholder="Ex.: Corolla, Polo, Onix...">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-muted mb-1">Filtrar por Placa:</label>
+            <input type="text" id="filtro-veiculo-placa" class="form-control form-control-sm" placeholder="Ex.: BRA2E19...">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-muted mb-1">Categoria:</label>
+            <select id="filtro-veiculo-categoria" class="form-select form-select-sm">
+              <option value="">Todas as Categorias</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela de Veículos -->
+      <div class="card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="fw-bold mb-0">Veículos na Frota</h6>
+          <span class="badge bg-primary" id="badge-total-veiculos">0 veículo(s)</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Modelo</th>
+                <th>Placa</th>
+                <th>Fabricante</th>
+                <th>Categoria</th>
+                <th>Ano</th>
+                <th>Status</th>
+                <th class="text-end">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-veiculos-corpo">
+              <tr><td colspan="8" class="text-center text-muted">Carregando frota...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. VIEW: ALUGUÉIS & DEVOLUÇÕES (CRUD + 2 Filtros: Cliente e Status) -->
+    <section id="view-alugueis" class="view-section d-none">
+      <div class="topbar">
+        <h1 class="page-title">Gestão de Contratos de Locação</h1>
+        <button class="btn btn-primary" onclick="abrirModalNovaLocacao()">
+          + Nova Locação
+        </button>
+      </div>
+
+      <!-- Barra de Filtros Personalizados em 2 Campos -->
+      <div class="filter-box">
+        <div class="row g-2 align-items-center">
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-muted mb-1">Filtrar por Nome do Cliente:</label>
+            <input type="text" id="filtro-aluguel-cliente" class="form-control form-control-sm" placeholder="Digite o nome do cliente...">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-bold text-muted mb-1">Status do Aluguel:</label>
+            <select id="filtro-aluguel-status" class="form-select form-select-sm">
+              <option value="">Todos os Status</option>
+              <option value="Ativo">Ativo (Em andamento)</option>
+              <option value="Finalizado">Finalizado (Devolvido)</option>
+              <option value="Cancelado">Cancelado</option>
+            </select>
+          </div>
+          <div class="col-md-2 text-end pt-3">
+            <button class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('filtro-aluguel-cliente').value=''; document.getElementById('filtro-aluguel-status').value=''; renderAlugueis();">
+              Limpar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela de Aluguéis -->
+      <div class="card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="fw-bold mb-0">Contratos de Locação</h6>
+          <span class="badge bg-primary" id="badge-total-alugueis">0 contrato(s)</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Veículo Alugado</th>
+                <th>Retirada</th>
+                <th>Previsão Devolução</th>
+                <th>Status</th>
+                <th>Valor Total</th>
+                <th class="text-end">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-alugueis-corpo">
+              <tr><td colspan="8" class="text-center text-muted">Carregando contratos...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. VIEW: FABRICANTES & CATEGORIAS (CRUDs + Filtros em 2 Campos) -->
+    <section id="view-fabricantes-categorias" class="view-section d-none">
+      <div class="topbar">
+        <h1 class="page-title">Fabricantes e Categorias de Veículos</h1>
+      </div>
+
+      <div class="row g-4">
+        <!-- Fabricantes -->
+        <div class="col-lg-6">
+          <div class="card p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold mb-0">Fabricantes (Montadoras)</h5>
+              <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modal-fabricante">+ Novo Fabricante</button>
+            </div>
+            
+            <!-- Filtro duplo de fabricantes -->
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <input type="text" id="filtro-fab-nome" class="form-control form-control-sm" placeholder="Filtrar por Nome...">
+              </div>
+              <div class="col-6">
+                <input type="text" id="filtro-fab-pais" class="form-control form-control-sm" placeholder="Filtrar por País...">
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>País Origem</th>
+                    <th class="text-end">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="tabela-fabricantes-corpo"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categorias -->
+        <div class="col-lg-6">
+          <div class="card p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold mb-0">Categorias de Veículos</h5>
+              <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modal-categoria">+ Nova Categoria</button>
+            </div>
+
+            <!-- Filtro de categorias -->
+            <div class="mb-3">
+              <input type="text" id="filtro-cat-nome" class="form-control form-control-sm" placeholder="Filtrar categoria por Nome...">
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Categoria</th>
+                    <th>Descrição</th>
+                    <th>Diária Base</th>
+                    <th class="text-end">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="tabela-categorias-corpo"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. VIEW: CONSULTAS AVANÇADAS (OS 5 FILTROS COM JOINS) -->
+    <section id="view-consultas" class="view-section d-none">
+      <div class="topbar">
+        <h1 class="page-title">Painel de Consultas Avançadas (Relatórios com Joins)</h1>
+      </div>
+
+      <div class="card p-3">
+        <!-- Navegação por Abas (Tabs) -->
+        <ul class="nav nav-pills mb-3 border-bottom pb-2" id="consultas-tabs" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active btn-sm" id="tab-f1-btn" data-bs-toggle="pill" data-bs-target="#tab-f1" type="button">
+              1. Veículos Disponíveis (INNER JOIN)
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link btn-sm" id="tab-f2-btn" data-bs-toggle="pill" data-bs-target="#tab-f2" type="button">
+              2. Histórico do Cliente (INNER JOIN)
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link btn-sm" id="tab-f3-btn" data-bs-toggle="pill" data-bs-target="#tab-f3" type="button">
+              3. Relatório de Clientes (LEFT JOIN)
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link btn-sm" id="tab-f4-btn" data-bs-toggle="pill" data-bs-target="#tab-f4" type="button">
+              4. Desempenho da Frota (LEFT+INNER)
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link btn-sm" id="tab-f5-btn" data-bs-toggle="pill" data-bs-target="#tab-f5" type="button">
+              5. Situação Financeira (LEFT+INNER)
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="consultas-tabs-content">
+          <!-- ABA 1: VEICULOS DISPONÍVEIS -->
+          <div class="tab-pane fade show active" id="tab-f1" role="tabpanel">
+            <div class="p-3 bg-light rounded mb-3">
+              <div class="row g-2 align-items-center">
+                <div class="col-md-5">
+                  <label class="form-label small fw-bold">Categoria:</label>
+                  <select id="f1-categoria" class="form-select form-select-sm"></select>
+                </div>
+                <div class="col-md-5">
+                  <label class="form-label small fw-bold">Fabricante:</label>
+                  <select id="f1-fabricante" class="form-select form-select-sm"></select>
+                </div>
+                <div class="col-md-2 text-end pt-3">
+                  <button class="btn btn-sm btn-primary w-100" onclick="carregarFiltro1()">Consultar</button>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="small text-muted">Junção: <code>INNER JOIN</code> entre Veiculos, Categorias e Fabricantes.</span>
+              <span class="badge bg-secondary" id="f1-total-badge">0 veículo(s)</span>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Modelo</th>
+                    <th>Placa</th>
+                    <th>Fabricante</th>
+                    <th>Categoria</th>
+                    <th>Diária Base</th>
+                    <th>Quilometragem</th>
+                  </tr>
+                </thead>
+                <tbody id="f1-tabela-corpo"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ABA 2: HISTÓRICO DO CLIENTE -->
+          <div class="tab-pane fade" id="tab-f2" role="tabpanel">
+            <div class="p-3 bg-light rounded mb-3">
+              <div class="row g-2 align-items-center">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold">Selecione o Cliente:</label>
+                  <select id="f2-cliente" class="form-select form-select-sm"></select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-bold">Status da Locação:</label>
+                  <select id="f2-status" class="form-select form-select-sm">
+                    <option value="">Todos</option>
+                    <option value="Ativo">Ativo</option>
+                    <option value="Finalizado">Finalizado</option>
+                  </select>
+                </div>
+                <div class="col-md-2 text-end pt-3">
+                  <button class="btn btn-sm btn-primary w-100" onclick="carregarFiltro2()">Filtrar</button>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="small text-muted">Junção: <code>INNER JOIN</code> entre Alugueis, Clientes e Veiculos.</span>
+              <span class="badge bg-secondary" id="f2-total-badge">0 registro(s)</span>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Contrato</th>
+                    <th>Cliente</th>
+                    <th>Veículo</th>
+                    <th>Placa</th>
+                    <th>Retirada</th>
+                    <th>Devolução</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="f2-tabela-corpo">
+                  <tr><td colspan="7" class="text-center text-muted">Selecione um cliente acima.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ABA 3: RELATÓRIO DE CLIENTES (LEFT JOIN) -->
+          <div class="tab-pane fade" id="tab-f3" role="tabpanel">
+            <div class="p-3 bg-light rounded mb-3">
+              <div class="row g-2 align-items-center">
+                <div class="col-md-8">
+                  <input type="text" id="f3-filtro-nome" class="form-control form-control-sm" placeholder="Filtrar por nome do cliente...">
+                </div>
+                <div class="col-md-4 text-end">
+                  <button class="btn btn-sm btn-outline-secondary" onclick="carregarFiltro3()">Atualizar Relatório</button>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="small text-muted">Junção: <code>LEFT JOIN</code> entre Clientes e Alugueis (inclui clientes sem locações).</span>
+              <span class="badge bg-secondary" id="f3-total-badge">0 cliente(s)</span>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nome do Cliente</th>
+                    <th>CPF</th>
+                    <th>Total de Locações</th>
+                    <th>Total Gasto</th>
+                    <th>Última Locação</th>
+                  </tr>
+                </thead>
+                <tbody id="f3-tabela-corpo"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ABA 4: DESEMPENHO DA FROTA (LEFT + INNER) -->
+          <div class="tab-pane fade" id="tab-f4" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="small text-muted">Junção: <code>LEFT JOIN</code> entre Veiculos e Alugueis, combinado com <code>INNER JOIN</code> em Fabricantes e Categorias.</span>
+              <span class="badge bg-secondary" id="f4-total-badge">0 veículo(s)</span>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Modelo</th>
+                    <th>Placa</th>
+                    <th>Fabricante</th>
+                    <th>Categoria</th>
+                    <th>Total de Locações</th>
+                    <th>Status Atual</th>
+                  </tr>
+                </thead>
+                <tbody id="f4-tabela-corpo"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ABA 5: SITUAÇÃO FINANCEIRA (LEFT + INNER) -->
+          <div class="tab-pane fade" id="tab-f5" role="tabpanel">
+            <div class="p-3 bg-light rounded mb-3">
+              <div class="row g-2 align-items-center">
+                <div class="col-md-8">
+                  <label class="form-label small fw-bold">Filtrar por Status do Pagamento:</label>
+                  <select id="f5-status-pagamento" class="form-select form-select-sm" onchange="carregarFiltro5()">
+                    <option value="">Todos os Status</option>
+                    <option value="Aprovado">Aprovado (Quitado)</option>
+                    <option value="Pendente">Pendente (Aguardando)</option>
+                    <option value="Cancelado">Cancelado</option>
+                  </select>
+                </div>
+                <div class="col-md-4 text-end pt-3">
+                  <button class="btn btn-sm btn-primary" onclick="carregarFiltro5()">Consultar</button>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="small text-muted">Junção: <code>LEFT JOIN</code> entre Alugueis e Pagamentos, com <code>INNER JOIN</code> em Clientes e Veiculos.</span>
+              <span class="badge bg-secondary" id="f5-total-badge">0 registro(s)</span>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Contrato</th>
+                    <th>Cliente</th>
+                    <th>Veículo</th>
+                    <th>Valor Total</th>
+                    <th>Forma Pagamento</th>
+                    <th>Status Pagamento</th>
+                    <th>Data Pagamento</th>
+                  </tr>
+                </thead>
+                <tbody id="f5-tabela-corpo"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAIS DE OPERAÇÃO -->
+
+  <!-- Modal Cliente -->
+  <div class="modal fade" id="modal-cliente" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="form-cliente" onsubmit="salvarCliente(event)">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="cliente-modal-title">Cadastrar Novo Cliente</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="cliente-id">
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nome Completo *</label>
+              <input type="text" id="cliente-nome" class="form-control form-control-sm" required>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">CPF *</label>
+                <input type="text" id="cliente-cpf" class="form-control form-control-sm" required placeholder="12345678901">
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">CNH *</label>
+                <input type="text" id="cliente-cnh" class="form-control form-control-sm" required placeholder="12345678900">
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">E-mail</label>
+              <input type="email" id="cliente-email" class="form-control form-control-sm">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Telefone</label>
+              <input type="text" id="cliente-telefone" class="form-control form-control-sm" placeholder="(11) 98765-4321">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-sm btn-primary">Salvar Cliente</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Veículo -->
+  <div class="modal fade" id="modal-veiculo" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="form-veiculo" onsubmit="salvarVeiculo(event)">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="veiculo-modal-title">Cadastrar Novo Veículo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="veiculo-id">
+            <div class="row g-2 mb-2">
+              <div class="col-8">
+                <label class="form-label small fw-bold">Modelo do Veículo *</label>
+                <input type="text" id="veiculo-modelo" class="form-control form-control-sm" required placeholder="Ex.: Corolla XEi 2.0">
+              </div>
+              <div class="col-4">
+                <label class="form-label small fw-bold">Placa *</label>
+                <input type="text" id="veiculo-placa" class="form-control form-control-sm" required placeholder="BRA2E19">
+              </div>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold">Fabricante *</label>
+                <select id="veiculo-fabricante" class="form-select form-select-sm" required></select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Categoria *</label>
+                <select id="veiculo-categoria" class="form-select form-select-sm" required></select>
+              </div>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-4">
+                <label class="form-label small fw-bold">Ano *</label>
+                <input type="number" id="veiculo-ano" class="form-control form-control-sm" required value="2024">
+              </div>
+              <div class="col-4">
+                <label class="form-label small fw-bold">Cor *</label>
+                <input type="text" id="veiculo-cor" class="form-control form-control-sm" required value="Prata">
+              </div>
+              <div class="col-4">
+                <label class="form-label small fw-bold">Quilometragem *</label>
+                <input type="number" id="veiculo-km" class="form-control form-control-sm" required value="10000">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-sm btn-primary">Salvar Veículo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Aluguel -->
+  <div class="modal fade" id="modal-aluguel" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="form-aluguel" onsubmit="salvarAluguel(event)">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold">Abrir Novo Contrato de Locação</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Cliente Locatário *</label>
+              <select id="aluguel-cliente" class="form-select form-select-sm" required></select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Veículo Disponível *</label>
+              <select id="aluguel-veiculo" class="form-select form-select-sm" required></select>
+              <div class="form-text small">Apenas veículos com status "Disponível" são listados.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Data Prevista para Devolução *</label>
+              <input type="datetime-local" id="aluguel-data-prevista" class="form-control form-control-sm" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-sm btn-primary">Formalizar Contrato</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Devolução -->
+  <div class="modal fade" id="modal-devolucao" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="form-devolucao" onsubmit="salvarDevolucao(event)">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title fw-bold">Registrar Devolução do Veículo</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="devolucao-aluguel-id">
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Quilometragem Inicial:</label>
+              <input type="number" id="devolucao-km-inicial" class="form-control form-control-sm bg-light" readonly>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Quilometragem Final (Odômetro na Devolução) *</label>
+              <input type="number" id="devolucao-km-final" class="form-control form-control-sm" required>
+              <div class="form-text small">Deve ser maior ou igual à quilometragem inicial.</div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Observações da Devolução</label>
+              <textarea id="devolucao-observacoes" class="form-control form-control-sm" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-sm btn-success">Concluir Devolução e Calcular</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Fabricante -->
+  <div class="modal fade" id="modal-fabricante" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <form onsubmit="salvarFabricante(event)">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold">Novo Fabricante</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nome da Montadora *</label>
+              <input type="text" id="fab-nome" class="form-control form-control-sm" required placeholder="Ex.: Honda">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">País de Origem</label>
+              <input type="text" id="fab-pais" class="form-control form-control-sm" placeholder="Ex.: Japão">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-sm btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Categoria -->
+  <div class="modal fade" id="modal-categoria" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form onsubmit="salvarCategoria(event)">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold">Nova Categoria</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Nome da Categoria *</label>
+              <input type="text" id="cat-nome" class="form-control form-control-sm" required placeholder="Ex.: Pickup 4x4">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Valor Base da Diária (R$) *</label>
+              <input type="number" step="0.01" id="cat-diaria" class="form-control form-control-sm" required placeholder="Ex.: 280.00">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold">Descrição</label>
+              <textarea id="cat-descricao" class="form-control form-control-sm" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-sm btn-primary">Salvar Categoria</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container de Toasts Flutuantes -->
+  <div id="toast-container"></div>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Scripts do Sistema -->
+  <script src="js/api.js"></script>
+  <script src="js/consultas.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

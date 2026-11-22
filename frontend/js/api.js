@@ -38,13 +38,30 @@ class ApiService {
       }
 
       if (!response.ok) {
-        const errorMessage = (data && data.detalhe) || (data && data.mensagem) || (typeof data === 'string' ? data : 'Erro na requisição');
+        let errorMessage = 'Erro ao processar a solicitação no servidor.';
+        if (data && typeof data === 'object') {
+          if (data.mensagem) {
+            errorMessage = data.mensagem;
+          } else if (data.errors && typeof data.errors === 'object') {
+            const msgs = Object.values(data.errors).flat();
+            errorMessage = msgs.join(' ');
+          } else if (data.title) {
+            errorMessage = data.title;
+          } else if (data.detalhe) {
+            errorMessage = data.detalhe;
+          }
+        } else if (typeof data === 'string' && data.trim()) {
+          errorMessage = data;
+        }
         throw new Error(errorMessage);
       }
 
       return data;
     } catch (error) {
       console.error(`Erro ao chamar ${url}:`, error);
+      if (error.name === 'TypeError' || error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        throw new Error('Não foi possível conectar ao servidor da API. Verifique se o backend está em execução.');
+      }
       throw error;
     }
   }

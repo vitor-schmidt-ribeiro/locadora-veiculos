@@ -23,10 +23,10 @@
         <span>📊</span> Dashboard
       </a>
       <a class="nav-link" data-view="clientes">
-        <span>👥</span> Clientes (CRUD)
+        <span>👥</span> Clientes
       </a>
       <a class="nav-link" data-view="veiculos">
-        <span>🚘</span> Veículos (Frota)
+        <span>🚘</span> Veículos
       </a>
       <a class="nav-link" data-view="alugueis">
         <span>📝</span> Aluguéis & Devoluções
@@ -35,7 +35,7 @@
         <span>🏭</span> Fabricantes & Categorias
       </a>
       <a class="nav-link" data-view="consultas">
-        <span>🔍</span> Consultas Avançadas
+        <span>🔍</span> Consultas & Relatórios
       </a>
     </div>
 
@@ -138,7 +138,7 @@
             </div>
             <div class="mt-3">
               <button class="btn btn-outline-primary w-100" onclick="showView('consultas')">
-                Ver Relatórios Avançados (Joins)
+                Ver Relatórios e Consultas
               </button>
             </div>
           </div>
@@ -164,7 +164,7 @@
           </div>
           <div class="col-md-4">
             <label class="form-label small fw-bold text-muted mb-1">Filtrar por CPF:</label>
-            <input type="text" id="filtro-cliente-cpf" class="form-control form-control-sm" placeholder="Digite o CPF...">
+            <input type="text" id="filtro-cliente-cpf" class="form-control form-control-sm" maxlength="14" placeholder="000.000.000-00">
           </div>
           <div class="col-md-3 text-end pt-3">
             <button class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('filtro-cliente-nome').value=''; document.getElementById('filtro-cliente-cpf').value=''; renderClientes();">
@@ -392,10 +392,10 @@
       </div>
     </section>
 
-    <!-- 6. VIEW: CONSULTAS AVANÇADAS (OS 5 FILTROS COM JOINS) -->
+    <!-- 6. VIEW: CONSULTAS AVANÇADAS -->
     <section id="view-consultas" class="view-section d-none">
       <div class="topbar">
-        <h1 class="page-title">Painel de Consultas Avançadas (Relatórios com Joins)</h1>
+        <h1 class="page-title">Relatórios e Consultas Avançadas</h1>
       </div>
 
       <div class="card p-3">
@@ -403,27 +403,27 @@
         <ul class="nav nav-pills mb-3 border-bottom pb-2" id="consultas-tabs" role="tablist">
           <li class="nav-item">
             <button class="nav-link active btn-sm" id="tab-f1-btn" data-bs-toggle="pill" data-bs-target="#tab-f1" type="button">
-              1. Veículos Disponíveis (INNER JOIN)
+              1. Veículos Disponíveis
             </button>
           </li>
           <li class="nav-item">
             <button class="nav-link btn-sm" id="tab-f2-btn" data-bs-toggle="pill" data-bs-target="#tab-f2" type="button">
-              2. Histórico do Cliente (INNER JOIN)
+              2. Histórico de Locações
             </button>
           </li>
           <li class="nav-item">
             <button class="nav-link btn-sm" id="tab-f3-btn" data-bs-toggle="pill" data-bs-target="#tab-f3" type="button">
-              3. Relatório de Clientes (LEFT JOIN)
+              3. Relação de Clientes
             </button>
           </li>
           <li class="nav-item">
             <button class="nav-link btn-sm" id="tab-f4-btn" data-bs-toggle="pill" data-bs-target="#tab-f4" type="button">
-              4. Desempenho da Frota (LEFT+INNER)
+              4. Desempenho da Frota
             </button>
           </li>
           <li class="nav-item">
             <button class="nav-link btn-sm" id="tab-f5-btn" data-bs-toggle="pill" data-bs-target="#tab-f5" type="button">
-              5. Situação Financeira (LEFT+INNER)
+              5. Situação Financeira
             </button>
           </li>
         </ul>
@@ -633,20 +633,20 @@
             <div class="row g-2 mb-2">
               <div class="col-6">
                 <label class="form-label small fw-bold">CPF *</label>
-                <input type="text" id="cliente-cpf" class="form-control form-control-sm" required placeholder="12345678901">
+                <input type="text" id="cliente-cpf" class="form-control form-control-sm" required maxlength="14" placeholder="000.000.000-00">
               </div>
               <div class="col-6">
                 <label class="form-label small fw-bold">CNH *</label>
-                <input type="text" id="cliente-cnh" class="form-control form-control-sm" required placeholder="12345678900">
+                <input type="text" id="cliente-cnh" class="form-control form-control-sm" required maxlength="11" placeholder="00000000000">
               </div>
             </div>
             <div class="mb-2">
-              <label class="form-label small fw-bold">E-mail</label>
-              <input type="email" id="cliente-email" class="form-control form-control-sm">
+              <label class="form-label small fw-bold">E-mail *</label>
+              <input type="email" id="cliente-email" class="form-control form-control-sm" required placeholder="cliente@email.com">
             </div>
             <div class="mb-2">
-              <label class="form-label small fw-bold">Telefone</label>
-              <input type="text" id="cliente-telefone" class="form-control form-control-sm" placeholder="(11) 98765-4321">
+              <label class="form-label small fw-bold">Telefone *</label>
+              <input type="text" id="cliente-telefone" class="form-control form-control-sm" required maxlength="15" placeholder="(00) 00000-0000">
             </div>
           </div>
           <div class="modal-footer">

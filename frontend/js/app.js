@@ -17,9 +17,49 @@ const AppState = {
 document.addEventListener('DOMContentLoaded', async () => {
   setupNavigation();
   setupFilterListeners();
+  setupInputMasks();
   await loadInitialData();
   showView('dashboard');
 });
+
+// Funções de Máscara e Formatação
+function formatarCPF(v) {
+  if (!v) return '';
+  v = v.toString().replace(/\D/g, '').slice(0, 11);
+  if (v.length > 9) {
+    return v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+  }
+  if (v.length > 6) {
+    return v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+  }
+  if (v.length > 3) {
+    return v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+  }
+  return v;
+}
+
+function formatarTelefone(v) {
+  if (!v) return '';
+  v = v.toString().replace(/\D/g, '').slice(0, 11);
+  if (v.length > 10) {
+    return v.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+  }
+  if (v.length > 6) {
+    return v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+  }
+  if (v.length > 2) {
+    return v.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+  }
+  if (v.length > 0) {
+    return v.replace(/(\d{0,2})/, '($1');
+  }
+  return v;
+}
+
+function formatarCNH(v) {
+  if (!v) return '';
+  return v.toString().replace(/\D/g, '').slice(0, 11);
+}
 
 // Toast / Notificações
 function showToast(message, type = 'success') {
@@ -182,10 +222,10 @@ function renderClientes() {
     <tr>
       <td class="fw-bold">#${c.id}</td>
       <td>${c.nome}</td>
-      <td><span class="font-monospace">${c.cpf}</span></td>
-      <td><span class="font-monospace">${c.cnh}</span></td>
+      <td><span class="font-monospace">${formatarCPF(c.cpf)}</span></td>
+      <td><span class="font-monospace">${c.cnh || '-'}</span></td>
       <td>${c.email || '-'}</td>
-      <td>${c.telefone || '-'}</td>
+      <td>${formatarTelefone(c.telefone)}</td>
       <td class="text-end">
         <button class="btn btn-sm btn-outline-primary me-1" onclick="abrirModalEdicaoCliente(${c.id})">Editar</button>
         <button class="btn btn-sm btn-outline-danger" onclick="excluirCliente(${c.id})">Excluir</button>
@@ -208,11 +248,11 @@ function abrirModalEdicaoCliente(id) {
 
   document.getElementById('cliente-modal-title').textContent = 'Editar Dados do Cliente';
   document.getElementById('cliente-id').value = cliente.id;
-  document.getElementById('cliente-nome').value = cliente.nome;
-  document.getElementById('cliente-cpf').value = cliente.cpf;
-  document.getElementById('cliente-cnh').value = cliente.cnh;
-  document.getElementById('cliente-email').value = cliente.email;
-  document.getElementById('cliente-telefone').value = cliente.telefone;
+  document.getElementById('cliente-nome').value = cliente.nome || '';
+  document.getElementById('cliente-cpf').value = formatarCPF(cliente.cpf || '');
+  document.getElementById('cliente-cnh').value = formatarCNH(cliente.cnh || '');
+  document.getElementById('cliente-email').value = cliente.email || '';
+  document.getElementById('cliente-telefone').value = formatarTelefone(cliente.telefone || '');
 
   const modal = new bootstrap.Modal(document.getElementById('modal-cliente'));
   modal.show();
@@ -220,6 +260,10 @@ function abrirModalEdicaoCliente(id) {
 
 async function salvarCliente(event) {
   event.preventDefault();
+  const form = event.target;
+  const btnSubmit = form.querySelector('button[type="submit"]');
+  const btnOriginalText = btnSubmit.innerHTML;
+
   const id = document.getElementById('cliente-id').value;
   const clienteData = {
     nome: document.getElementById('cliente-nome').value.trim(),
@@ -229,7 +273,28 @@ async function salvarCliente(event) {
     telefone: document.getElementById('cliente-telefone').value.trim()
   };
 
+  // Validação do número de caracteres
+  const digitosCpf = clienteData.cpf.replace(/\D/g, '');
+  if (digitosCpf.length !== 11) {
+    showToast('O CPF deve conter exatamente 11 dígitos.', 'warning');
+    return;
+  }
+
+  const digitosTel = clienteData.telefone.replace(/\D/g, '');
+  if (digitosTel.length < 10 || digitosTel.length > 11) {
+    showToast('O telefone deve conter DDD e 8 ou 9 dígitos.', 'warning');
+    return;
+  }
+
+  if (clienteData.cnh.length < 8 || clienteData.cnh.length > 11) {
+    showToast('A CNH deve conter entre 8 e 11 dígitos numéricos.', 'warning');
+    return;
+  }
+
   try {
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Salvando...';
+
     if (id) {
       await ApiService.updateCliente(id, clienteData);
       showToast('Cliente atualizado com sucesso!');
@@ -243,6 +308,9 @@ async function salvarCliente(event) {
     renderClientes();
   } catch (err) {
     showToast(err.message, 'danger');
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.innerHTML = btnOriginalText;
   }
 }
 
@@ -344,6 +412,10 @@ function abrirModalEdicaoVeiculo(id) {
 
 async function salvarVeiculo(event) {
   event.preventDefault();
+  const form = event.target;
+  const btnSubmit = form.querySelector('button[type="submit"]');
+  const btnOriginalText = btnSubmit.innerHTML;
+
   const id = document.getElementById('veiculo-id').value;
   const veiculoData = {
     modelo: document.getElementById('veiculo-modelo').value.trim(),
@@ -356,6 +428,9 @@ async function salvarVeiculo(event) {
   };
 
   try {
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Salvando...';
+
     if (id) {
       await ApiService.updateVeiculo(id, veiculoData);
       showToast('Veículo atualizado com sucesso!');
@@ -369,6 +444,9 @@ async function salvarVeiculo(event) {
     renderVeiculos();
   } catch (err) {
     showToast(err.message, 'danger');
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.innerHTML = btnOriginalText;
   }
 }
 
@@ -455,6 +533,10 @@ function abrirModalNovaLocacao() {
 
 async function salvarAluguel(event) {
   event.preventDefault();
+  const form = event.target;
+  const btnSubmit = form.querySelector('button[type="submit"]');
+  const btnOriginalText = btnSubmit.innerHTML;
+
   const aluguelData = {
     clienteId: parseInt(document.getElementById('aluguel-cliente').value),
     veiculoId: parseInt(document.getElementById('aluguel-veiculo').value),
@@ -462,6 +544,9 @@ async function salvarAluguel(event) {
   };
 
   try {
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Registrando...';
+
     await ApiService.createAluguel(aluguelData);
     showToast('Locação iniciada com sucesso! Veículo alterado para Alugado.');
     bootstrap.Modal.getInstance(document.getElementById('modal-aluguel')).hide();
@@ -475,6 +560,9 @@ async function salvarAluguel(event) {
     renderDashboard();
   } catch (err) {
     showToast(err.message, 'danger');
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.innerHTML = btnOriginalText;
   }
 }
 
@@ -493,6 +581,10 @@ function abrirModalDevolucao(aluguelId, veiculoId) {
 
 async function salvarDevolucao(event) {
   event.preventDefault();
+  const form = event.target;
+  const btnSubmit = form.querySelector('button[type="submit"]');
+  const btnOriginalText = btnSubmit.innerHTML;
+
   const aluguelId = document.getElementById('devolucao-aluguel-id').value;
   const devolucaoData = {
     quilometragemFinal: parseInt(document.getElementById('devolucao-km-final').value),
@@ -500,6 +592,9 @@ async function salvarDevolucao(event) {
   };
 
   try {
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Registrando...';
+
     const res = await ApiService.registrarDevolucao(aluguelId, devolucaoData);
     showToast(`Devolução registrada com sucesso! Total calculado: R$ ${Number(res.valorTotal || 0).toFixed(2)}`);
     bootstrap.Modal.getInstance(document.getElementById('modal-devolucao')).hide();
@@ -512,6 +607,9 @@ async function salvarDevolucao(event) {
     renderDashboard();
   } catch (err) {
     showToast(err.message, 'danger');
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.innerHTML = btnOriginalText;
   }
 }
 
@@ -573,12 +671,19 @@ function renderFabricantesCategorias() {
 
 async function salvarFabricante(event) {
   event.preventDefault();
+  const form = event.target;
+  const btnSubmit = form.querySelector('button[type="submit"]');
+  const btnOriginalText = btnSubmit.innerHTML;
+
   const fabData = {
     nome: document.getElementById('fab-nome').value.trim(),
     paisOrigem: document.getElementById('fab-pais').value.trim()
   };
 
   try {
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Salvando...';
+
     await ApiService.createFabricante(fabData);
     showToast('Fabricante cadastrado com sucesso!');
     bootstrap.Modal.getInstance(document.getElementById('modal-fabricante')).hide();
@@ -586,6 +691,9 @@ async function salvarFabricante(event) {
     renderFabricantesCategorias();
   } catch (err) {
     showToast(err.message, 'danger');
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.innerHTML = btnOriginalText;
   }
 }
 
@@ -603,6 +711,10 @@ async function excluirFabricante(id) {
 
 async function salvarCategoria(event) {
   event.preventDefault();
+  const form = event.target;
+  const btnSubmit = form.querySelector('button[type="submit"]');
+  const btnOriginalText = btnSubmit.innerHTML;
+
   const catData = {
     nome: document.getElementById('cat-nome').value.trim(),
     descricao: document.getElementById('cat-descricao').value.trim(),
@@ -610,6 +722,9 @@ async function salvarCategoria(event) {
   };
 
   try {
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Salvando...';
+
     await ApiService.createCategoria(catData);
     showToast('Categoria cadastrada com sucesso!');
     bootstrap.Modal.getInstance(document.getElementById('modal-categoria')).hide();
@@ -617,6 +732,9 @@ async function salvarCategoria(event) {
     renderFabricantesCategorias();
   } catch (err) {
     showToast(err.message, 'danger');
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.innerHTML = btnOriginalText;
   }
 }
 
@@ -677,3 +795,35 @@ function setupFilterListeners() {
   // Filtro 3
   document.getElementById('f3-filtro-nome').addEventListener('input', carregarFiltro3);
 }
+
+// Configura máscaras de digitação em tempo real
+function setupInputMasks() {
+  const cpfInput = document.getElementById('cliente-cpf');
+  if (cpfInput) {
+    cpfInput.addEventListener('input', (e) => {
+      e.target.value = formatarCPF(e.target.value);
+    });
+  }
+
+  const telInput = document.getElementById('cliente-telefone');
+  if (telInput) {
+    telInput.addEventListener('input', (e) => {
+      e.target.value = formatarTelefone(e.target.value);
+    });
+  }
+
+  const cnhInput = document.getElementById('cliente-cnh');
+  if (cnhInput) {
+    cnhInput.addEventListener('input', (e) => {
+      e.target.value = formatarCNH(e.target.value);
+    });
+  }
+
+  const filtroCpf = document.getElementById('filtro-cliente-cpf');
+  if (filtroCpf) {
+    filtroCpf.addEventListener('input', (e) => {
+      e.target.value = formatarCPF(e.target.value);
+    });
+  }
+}
+

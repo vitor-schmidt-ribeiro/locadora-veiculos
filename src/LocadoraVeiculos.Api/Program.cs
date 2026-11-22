@@ -7,6 +7,17 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuração de CORS para permitir acesso do Front-end
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<LocadoraDbContext>(options =>
 {
@@ -52,6 +63,9 @@ if (conn != null && conn.StartsWith("Data Source="))
 }
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
+
+// Habilita a política de CORS antes do mapeamento de endpoints
+app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
 {

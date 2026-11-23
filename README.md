@@ -1,25 +1,99 @@
 # Sistema de Locadora de Veículos
 
-Projeto de backend para gerenciamento de locação de veículos desenvolvido em C# com .NET 8, ASP.NET Core Web API, Entity Framework Core e SQL Server Express.
-
-## Estrutura da Solução
-
-O projeto segue a divisão em camadas:
-
-- **LocadoraVeiculos.Domain**: Classes de entidades de domínio e enums.
-- **LocadoraVeiculos.Infrastructure**: Mapeamento relacional (Fluent API), DbContext com carga inicial (seed) e migrações do Entity Framework Core.
-- **LocadoraVeiculos.Api**: Controladores RESTful, DTOs de entrada e saída, middleware de tratamento de erros e documentação interativa via Swagger com anotações XML.
-- **docs**: Documentação técnica do modelo conceitual (DER e dicionário de dados), especificação formal das APIs, relatório de testes com prints de tela e script SQL DDL.
+Sistema completo para gerenciamento de locação de veículos composto por uma **API RESTful** desenvolvida em C# com .NET 8 e Entity Framework Core, e uma aplicação **Front-End Single-Page (SPA)** responsiva em HTML5, CSS3, Bootstrap 5 e JavaScript assíncrono.
 
 ---
 
-## Documentação Técnica e Relatórios
+## Estrutura da Solução
 
+O projeto segue arquitetura em camadas desacopladas:
+
+- **`LocadoraVeiculos.Domain`**: Entidades de domínio (`Fabricante`, `Categoria`, `Veiculo`, `Cliente`, `Aluguel`, `Pagamento`) e enums.
+- **`LocadoraVeiculos.Infrastructure`**: Mapeamento objeto-relacional (Fluent API), DbContext com carga inicial (*seed*) e migrações do Entity Framework Core.
+- **`LocadoraVeiculos.Api`**: Controladores RESTful, DTOs de entrada/saída, tratamento global de exceções (`ErrorHandlingMiddleware`), políticas de CORS e documentação Swagger UI.
+- **`frontend/`**: Aplicação cliente SPA (HTML5, Bootstrap 5, Fetch API e CSS responsivo).
+- **`docs/`**: Documentação técnica, wireframes vetoriais, artigo SBC em LaTeX e capturas de tela.
+
+---
+
+## Documentação Técnica e Artefatos
+
+- **Wireframes no Figma:** [Acessar Projeto no Figma](https://www.figma.com/design/4RvUybZX26RIYfpTQJoJzv/Trabalho-Pr%C3%A1tico-2?node-id=0-1&t=VaKG7JrY3j0xc9lp-1)
+- **Artigo Científico (Padrão SBC):** [docs/artigo_sbc/artigo_sbc.tex](docs/artigo_sbc/artigo_sbc.tex)
 - **Modelo Conceitual e DER:** [docs/MODELO_CONCEITUAL.md](docs/MODELO_CONCEITUAL.md)
 - **Especificação Completa das APIs:** [docs/DOCUMENTACAO_APIS.md](docs/DOCUMENTACAO_APIS.md)
 - **Relatório de Testes:** [docs/RELATORIO_DE_TESTES.md](docs/RELATORIO_DE_TESTES.md)
 - **Script SQL para Banco de Dados:** [docs/script_banco_sql_express.sql](docs/script_banco_sql_express.sql)
-- **Evidências do Swagger UI:** [docs/screenshots/](docs/screenshots/)
+
+---
+
+## Como Executar o Projeto
+
+### Pré-requisitos
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) instalado.
+- Navegador web moderno (Chrome, Edge, Firefox).
+- *Opcional:* Python 3 (para executar o servidor estático local do front-end).
+
+---
+
+### Execução no Linux (Ubuntu / Debian / Fedora)
+
+#### 1. Iniciar a API (.NET 8)
+Abra um terminal na raiz do repositório:
+```bash
+# Restaurar dependências e compilar a solução
+dotnet build
+
+# Executar a API RESTful
+dotnet run --project src/LocadoraVeiculos.Api --launch-profile http
+```
+- A API iniciará em: `http://localhost:5097`
+- Documentação interativa Swagger: `http://localhost:5097/swagger`
+
+#### 2. Iniciar o Front-End
+Abra um **segundo terminal** na raiz do projeto:
+
+**Opção A — Servidor HTTP local (Recomendado):**
+```bash
+python3 -m http.server 3000 --directory frontend
+```
+Acesse no navegador: **`http://localhost:3000`**
+
+**Opção B — Abrir diretamente no navegador padrão:**
+```bash
+xdg-open frontend/index.html
+```
+
+---
+
+### Execução no Windows (PowerShell ou Prompt de Comando CMD)
+
+#### 1. Iniciar a API (.NET 8)
+Abra o PowerShell ou o CMD na pasta do repositório:
+```powershell
+# Restaurar dependências e compilar a solução
+dotnet build
+
+# Executar a API RESTful
+dotnet run --project src\LocadoraVeiculos.Api --launch-profile http
+```
+- A API iniciará em: `http://localhost:5097`
+- Documentação interativa Swagger: `http://localhost:5097/swagger`
+
+#### 2. Iniciar o Front-End
+Abra uma **segunda janela** do PowerShell ou CMD na pasta do projeto:
+
+**Opção A — Servidor HTTP local com Python (Recomendado):**
+```powershell
+python -m http.server 3000 --directory frontend
+```
+Acesse no navegador: **`http://localhost:3000`**
+
+**Opção B — Abrir diretamente no navegador padrão (Sem Python):**
+```powershell
+# No PowerShell ou CMD:
+start frontend\index.html
+```
 
 ---
 
@@ -32,7 +106,7 @@ O projeto segue a divisão em camadas:
 - `GET /api/Fabricantes/{id}`: Consulta fabricante por ID.
 - `POST /api/Fabricantes`: Cadastra novo fabricante.
 - `PUT /api/Fabricantes/{id}`: Atualiza dados do fabricante.
-- `DELETE /api/Fabricantes/{id}`: Remove fabricante (com validação de integridade referencial).
+- `DELETE /api/Fabricantes/{id}`: Remove fabricante (com integridade referencial).
 
 #### 2. Categorias (`/api/Categorias`)
 - `GET /api/Categorias`: Lista todas as categorias com diárias base.
@@ -46,25 +120,25 @@ O projeto segue a divisão em camadas:
 - `GET /api/Veiculos/{id}`: Consulta veículo por ID.
 - `POST /api/Veiculos`: Cadastra veículo (com validação de placa única).
 - `PUT /api/Veiculos/{id}`: Atualiza dados do veículo.
-- `DELETE /api/Veiculos/{id}`: Remove veículo (com verificação de histórico de locações).
+- `DELETE /api/Veiculos/{id}`: Remove veículo (com verificação de histórico).
 
 #### 4. Clientes (`/api/Clientes`)
 - `GET /api/Clientes`: Lista todos os clientes cadastrados.
 - `GET /api/Clientes/{id}`: Consulta cliente por ID.
-- `POST /api/Clientes`: Cadastra cliente (com validação de unicidade de CPF, e-mail e CNH).
+- `POST /api/Clientes`: Cadastra cliente (validação de CPF, e-mail e CNH únicos).
 - `PUT /api/Clientes/{id}`: Atualiza dados cadastrais.
 - `DELETE /api/Clientes/{id}`: Remove cliente (com verificação de contratos).
 
 #### 5. Aluguéis (`/api/Alugueis`)
 - `GET /api/Alugueis`: Lista todos os contratos de locação.
 - `GET /api/Alugueis/{id}`: Consulta aluguel por ID.
-- `POST /api/Alugueis`: Abre novo contrato de locação (valida disponibilidade e altera status para Alugado).
-- `PUT /api/Alugueis/{id}/devolucao`: Registra a devolução do veículo (valida odômetro, calcula valor final e libera o veículo).
-- `DELETE /api/Alugueis/{id}`: Cancela contrato ativo ou remove histórico.
+- `POST /api/Alugueis`: Abre novo contrato de locação (altera veículo para Alugado).
+- `PUT /api/Alugueis/{id}/devolucao`: Registra a devolução (recalcula valor e odômetro).
+- `DELETE /api/Alugueis/{id}`: Cancela contrato ativo.
 
 ---
 
-### Filtros com Junções (Joins)
+### Consultas com Junções Relacionais (Joins)
 
 1. **Filtro 1 - Veículos Disponíveis por Categoria e Fabricante (`INNER JOIN`)**
    - Rota: `GET /api/Veiculos/disponiveis?categoriaId={id}&fabricanteId={id}`
@@ -76,11 +150,11 @@ O projeto segue a divisão em camadas:
 
 3. **Filtro 3 - Relatório de Clientes e Locações (`LEFT JOIN`)**
    - Rota: `GET /api/Clientes/relatorio-locacoes`
-   - Junção: `LEFT JOIN` entre `Clientes` e `Alugueis`.
+   - Junção: `LEFT JOIN` entre `Clientes` e `Alugueis` (lista todos os clientes cadastrados).
 
 4. **Filtro 4 - Relatório de Frota e Desempenho (`LEFT JOIN` e `INNER JOIN`)**
    - Rota: `GET /api/Veiculos/relatorio-frota`
-   - Junção: `LEFT JOIN` entre `Veiculos` e `Alugueis`, combinado com `INNER JOIN` em `Fabricantes` e `Categorias`.
+   - Junção: `LEFT JOIN` entre `Veiculos` e `Alugueis`, com `INNER JOIN` em `Fabricantes` e `Categorias`.
 
 5. **Filtro 5 - Situação Financeira dos Aluguéis (`LEFT JOIN` e `INNER JOIN`)**
    - Rota: `GET /api/Alugueis/status-pagamento?statusPagamento={status}`
@@ -88,73 +162,17 @@ O projeto segue a divisão em camadas:
 
 ---
 
-## Requisitos e Execução
+## Funcionalidades do Front-End (TP2)
 
-### Pré-requisitos
-- .NET 8 SDK
-- SQL Server ou SQL Server Express
-
-### Compilação
-```bash
-dotnet restore
-dotnet build
-```
-
-### Configuração do Banco de Dados
-A string de conexão padrão encontra-se em `src/LocadoraVeiculos.Api/appsettings.json`:
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=LocadoraVeiculosDb;Trusted_Connection=True;TrustServerCertificate=True;"
-}
-```
-
-Para aplicar as migrações ao banco:
-```bash
-dotnet ef database update --project src/LocadoraVeiculos.Infrastructure --startup-project src/LocadoraVeiculos.Api
-```
-
-Ou execute o script SQL em `docs/script_banco_sql_express.sql`.
-
-### Execução da API
-```bash
-dotnet run --project src/LocadoraVeiculos.Api
-```
-O Swagger estará acessível em: `http://localhost:5000/swagger` ou `https://localhost:5001/swagger`.
-
----
-
-## Etapa 4 - Apresentação do Projeto (Vídeo)
-
-- **Link do Vídeo da Apresentação:** `[Inserir o link do vídeo gravado (YouTube / Google Drive / Teams)]`
-
----
-
-## Trabalho Prático 2 - Front-end Integrado
-
-O Trabalho Prático 2 contempla a camada de apresentação responsiva (Single Page Application em HTML5, CSS3, Bootstrap 5 e JavaScript Vanilla) conectada à API RESTful em .NET 8.
-
-### Funcionalidades do Front-end
-- **Dashboard Operacional:** Indicadores em tempo real (Total de Clientes, Frota, Aluguéis Ativos e Faturamento).
+- **Dashboard Executivo:** Indicadores em tempo real (Total de Clientes, Frota, Aluguéis Ativos e Faturamento).
 - **CRUDs Completos:** Telas e modais para Fabricantes, Categorias, Veículos, Clientes e Aluguéis/Devoluções.
-- **Buscas com Filtros Duplos:** Pesquisa parametrizada em pelo menos dois campos por entidade (ex.: Nome e CPF; Modelo e Placa; Cliente e Status).
-- **Painel de Consultas Avançadas:** Visualização interativa dos 5 relatórios analíticos utilizando junções relacionais (INNER JOIN e LEFT JOIN).
+- **Filtros em Múltiplos Campos:** Pesquisa dinâmica por Nome e CPF em Clientes; Modelo, Placa e Categoria em Veículos; Cliente e Status em Aluguéis.
+- **Validações com Máscaras em Tempo Real:** Formatação instantânea de CPF (`000.000.000-00`) e Telefone (`(00) 00000-0000`) com limites máximos de caracteres.
+- **Prevenção de Duplo Envio:** Desabilitação com indicador de carregamento (*spinner*) em todos os formulários.
+- **Painel de Consultas Avançadas:** Visualização em abas com execução parametrizada das consultas com `INNER JOIN` e `LEFT JOIN`.
 
-### Estrutura de Documentação do TP2
-- **Wireframes:** Arquivos vetoriais em `docs/wireframes/` e guia de importação no Figma em `docs/WIREFRAMES.md`.
-- **Artigo Científico (Padrão SBC):** Projeto LaTeX completo e pacote de estilos em `docs/artigo_sbc/artigo_sbc.tex`.
-- **Capturas de Tela da Aplicação:** `docs/screenshots/frontend/`.
+---
 
-### Como Executar o Front-end
-1. Inicie a API backend:
-   ```bash
-   dotnet run --project src/LocadoraVeiculos.Api
-   ```
-2. Abra o arquivo `frontend/index.html` diretamente no navegador ou execute um servidor estático local:
-   ```bash
-   cd frontend
-   python3 -m http.server 3000
-   ```
-   Acesse: `http://localhost:3000`.
+## Apresentação do Trabalho
 
-### Apresentação em Vídeo (Pitch - 3 a 5 Minutos)
-- **Link do Vídeo do Pitch (TP2):** `[Inserir o link do vídeo gravado (YouTube / Google Drive / Teams)]`
+- **Vídeo de Apresentação (Pitch de 3 a 5 Minutos):** `[Inserir o link do vídeo gravado (YouTube / Google Drive)]`

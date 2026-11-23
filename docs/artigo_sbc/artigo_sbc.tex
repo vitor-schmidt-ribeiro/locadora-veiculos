@@ -15,9 +15,9 @@
 
 \author{Vitor Schmidt Ribeiro\inst{1}}
 
-\address{Pontifícia Universidade Católica de Minas Gerais (PUC Minas)\\
-  Belo Horizonte -- MG -- Brasil
-  \email{Vitor.schmidt.ribeiro.vsr@gmail.com}
+\address{Pontifícia Universidade Católica de Minas Gerais (PUC Minas) -- Campus Betim\\
+  Betim -- MG -- Brasil
+  \email{1026074@pucminas.edu.br}
 }
 
 \begin{document}
@@ -25,117 +25,205 @@
 \maketitle
 
 \begin{resumo}
-Este artigo apresenta a concepção, o design de interface e a implementação de uma aplicação front-end responsiva integrada a uma API RESTful de gerenciamento de locadora de veículos, desenvolvida no escopo da disciplina de Programação Back-End. O front-end foi construído utilizando HTML5, CSS3, Bootstrap 5 e JavaScript assíncrono (Fetch API), consumindo os serviços construídos previamente em C# (.NET 8 com Entity Framework Core). O sistema contempla o ciclo completo de operações de cadastro, alteração, remoção e consultas com filtros parametrizados em múltiplos campos para todas as entidades de domínio, além da visualização dedicada de cinco relatórios analíticos utilizando junções relacionais (INNER JOIN e LEFT JOIN). Os resultados evidenciam a correta segregação de responsabilidades entre cliente e servidor, a consistência de regras de negócio em tempo real e a aderência aos padrões de usabilidade propostos nos wireframes.
+Este artigo apresenta a concepção, o projeto de interface e a implementação de uma aplicação front-end responsiva integrada a uma API RESTful para o gerenciamento de locadora de veículos, no contexto da disciplina de Programação Back-End. A aplicação cliente foi construída em arquitetura de página única (SPA) utilizando HTML5 semântico, CSS3, Bootstrap 5 e JavaScript Vanilla assíncrono (Fetch API), consumindo serviços desenvolvidos em C# (.NET 8 com Entity Framework Core) conectados a banco de dados relacional. O projeto abrangeu o ciclo completo de engenharia de software: elaboração prévia de wireframes no Figma em média fidelidade, implementação de operações completas de CRUD (Create, Read, Update, Delete) com buscas multifatoriais em múltiplos campos por entidade, validações cadastrais com máscaras em tempo real, além da visualização analítica dedicada para cinco consultas relacionais com junções (INNER JOIN e LEFT JOIN). Os resultados demonstram a segregação de responsabilidades entre cliente e servidor, integridade referencial estrita e aderência rigorosa às diretrizes de usabilidade projetadas.
 \end{resumo}
 
 \begin{abstracts}
-This paper presents the design, user interface conception, and implementation of a responsive front-end application integrated with a vehicle rental management RESTful API, developed within the scope of the Back-End Programming course. The front-end was built using HTML5, CSS3, Bootstrap 5, and asynchronous JavaScript (Fetch API), consuming the back-end services previously developed in C# (.NET 8 with Entity Framework Core). The system encompasses the complete lifecycle of registration, update, deletion, and multi-field filtered search operations for all domain entities, as well as dedicated dashboards for five relational analytical reports using INNER JOIN and LEFT JOIN. The results demonstrate the effective separation of concerns between client and server, real-time business rule consistency, and adherence to usability standards established in wireframes.
+This paper presents the conception, interface design, and implementation of a responsive front-end application integrated with a RESTful API for vehicle rental management, within the scope of the Back-End Programming course. The client application was constructed under a Single-Page Application (SPA) architecture utilizing semantic HTML5, CSS3, Bootstrap 5, and asynchronous Vanilla JavaScript (Fetch API), consuming services developed in C# (.NET 8 with Entity Framework Core) connected to a relational database. The project encompassed the complete software engineering lifecycle: preliminary wireframe design in Figma in medium fidelity, implementation of comprehensive CRUD operations with multi-field search filters for each entity, strict client-side validation with real-time input masks, and dedicated analytical dashboards for five relational queries with joins (INNER JOIN and LEFT JOIN). The results demonstrate effective separation of concerns between client and server, strict referential integrity, and adherence to user experience standards.
 \end{abstracts}
 
 \section{Introdução}
 
-A gestão eficiente de locadoras de veículos requer soluções computacionais que unam persistência relacional íntegra, regras de negócio consistentes no backend e uma interface visual de fácil operação para o usuário final. No Trabalho Prático 1, foi projetada e implementada a API RESTful em C# (.NET 8) com mapeamento objeto-relacional via Entity Framework Core, persistindo entidades essenciais como Fabricantes, Categorias, Veículos, Clientes, Aluguéis e Pagamentos.
+O gerenciamento moderno de frotas de automóveis exige sistemas computacionais que combinem alta confiabilidade na camada de persistência com interfaces visuais acessíveis e intuitivas para operadores e clientes. No segmento de locação de veículos, a ausência de sincronização em tempo real entre o pátio operacional e o setor de atendimento resulta em gargalos severos, tais como indisponibilidade inadvertida de veículos, erros no cálculo de diárias e inconsistências em contratos vigentes.
 
-O presente Trabalho Prático 2 tem como objetivo central desenvolver a camada de apresentação (front-end) totalmente integrada à API supracitada. O desenvolvimento guiou-se pela elaboração prévia de wireframes no Figma em média fidelidade, assegurando que todas as entidades possuíssem telas e funcionalidades completas de CRUD (Create, Read, Update, Delete) e buscas com filtros personalizados em pelo menos dois campos distintos por entidade. Adicionalmente, implementou-se uma área analítica para expor os resultados das cinco consultas relacionais avançadas com junções (\textit{INNER JOIN} e \textit{LEFT JOIN}) concebidas na etapa de banco de dados.
+Na primeira etapa deste trabalho (Trabalho Prático 1), foram estabelecidas as fundações do sistema por meio do desenvolvimento de uma API RESTful em C# utilizando o framework ASP.NET Core (.NET 8), apoiada pelo mapeamento objeto-relacional com Entity Framework Core. Foram mapeadas entidades de domínio cruciais como Fabricantes, Categorias, Veículos, Clientes, Aluguéis e Pagamentos, assegurando integridade referencial por chaves estrangeiras e índices de unicidade no banco de dados.
+
+O presente Trabalho Prático 2 tem como objetivo central conceber, projetar e implementar a camada de front-end totalmente integrada à referida API. O desenvolvimento pautou-se na construção prévia de wireframes no Figma para balizar a experiência do usuário (UX), seguida da codificação de uma aplicação web responsiva. A solução contempla operações de CRUD para todas as entidades, filtros de busca simultânea em no mínimo dois campos por entidade e um painel analítico para execução e exibição visual dos resultados de cinco consultas avançadas utilizando junções relacionais (\textit{INNER JOIN} e \textit{LEFT JOIN}).
+
+Este artigo está organizado da seguinte forma: a Seção 2 aborda a modelagem e a arquitetura de integração entre cliente e servidor; a Seção 3 detalha a concepção dos wireframes no Figma; a Seção 4 descreve a implementação do front-end e os mecanismos de validação; a Seção 5 expõe os resultados obtidos e a demonstração prática das consultas com junções; e a Seção 6 traz as considerações finais e os direcionamentos do projeto.
 
 \section{Modelagem do Sistema e Arquitetura de Integração}
 
-A arquitetura geral do sistema adota o paradigma cliente-servidor desacoplado. O back-end atua como provedor de dados e executor das regras de negócio, expondo rotas HTTP documentadas via especificação OpenAPI/Swagger. A comunicação entre a interface web e a API ocorre através do protocolo HTTP/JSON na porta local 5097.
+A arquitetura geral do sistema adota o padrão cliente-servidor com forte desacoplamento entre as camadas de apresentação e de negócios. A Figura de arquitetura fundamenta-se na comunicação via protocolo HTTP/1.1 sobre transporte TCP/IP, transmitindo cargas úteis em formato JSON (JavaScript Object Notation).
 
-Para mitigar restrições de segurança do navegador relacionadas à política de mesma origem, configurou-se uma política de CORS (\textit{Cross-Origin Resource Sharing}) no arquivo de inicialização do ASP.NET Core (\texttt{Program.cs}), autorizando requisições originadas do front-end com métodos HTTP padronizados (\texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE}).
+O back-end opera como fornecedor de serviços stateless, expondo endpoints documentados interativamente via especificação OpenAPI (Swagger UI) na porta local 5097. As regras de negócio e de consistência foram encapsuladas em controladores dedicados: \texttt{ClientesController}, \texttt{VeiculosController}, \texttt{AlugueisController}, \texttt{FabricantesController} e \texttt{CategoriasController}.
 
-As entidades de domínio estruturadas no sistema compreendem:
-\begin{itemize}
-    \item \textbf{Fabricante:} Cadastro das montadoras com país de origem.
-    \item \textbf{Categoria:} Classificação tarifária dos automóveis com valor base da diária.
-    \item \textbf{Veículo:} Ativo da frota contendo placa, modelo, ano, quilometragem e status operacional (\textit{Disponível}, \textit{Alugado}, \textit{Em Manutenção}).
-    \item \textbf{Cliente:} Registro cadastral com validação estrita de unicidade em CPF, e-mail e CNH.
-    \item \textbf{Aluguel:} Contrato conectando cliente e veículo, com controle de datas, odômetros e cálculo automático de valores.
-    \item \textbf{Pagamento:} Liquidação financeira das locações com métodos e situação transacional.
-\end{itemize}
+Para viabilizar a comunicação direta entre a interface executada no navegador e a API, foi implementada e configurada uma política permissiva de CORS (\textit{Cross-Origin Resource Sharing}) no arquivo de inicialização \texttt{Program.cs}, liberando requisições com os verbos HTTP essenciais: \texttt{GET}, \texttt{POST}, \texttt{PUT} e \texttt{DELETE}. Além disso, implementou-se um middleware customizado de captura global de exceções (\texttt{ErrorHandlingMiddleware}), responsável por interceptar violações de chave primária e duplicidade de dados relacionais (ex.: CPF, e-mail ou placa já cadastrados) e converter erros técnicos do SQLite ou SQL Server em mensagens amigáveis em português com código de status HTTP 409 (\textit{Conflict}).
 
-\section{Concepção dos Wireframes}
+A Tabela~\ref{tab:entidades} sintetiza as entidades de domínio modeladas, destacando as chaves e as restrições relacionais aplicadas.
 
-Em conformidade com as diretrizes do trabalho, foram projetados wireframes vetoriais em tons de cinza para orientar a ergonomia visual, hierarquia de componentes e fluxo de navegação. Os layouts contemplam:
+\begin{table}[H]
+\centering
+\caption{Estrutura das entidades relacionais do sistema.}
+\label{tab:entidades}
+\vspace{2mm}
+\footnotesize
+\begin{tabular}{lp{4.8cm}l}
+\toprule
+\textbf{Entidade} & \textbf{Atributos Principais} & \textbf{Restrições de Domínio} \\
+\midrule
+\textbf{Fabricante} & Id, Nome, PaisOrigem & Chave primária; Nome obrigatório \\
+\textbf{Categoria} & Id, Nome, Descricao, ValorDiariaBase & ValorDiariaBase $> 0$; Nome único \\
+\textbf{Veiculo} & Id, Modelo, Placa, Ano, Cor, Km, Status & Placa única (formato Mercosul/antigo); FKs \\
+\textbf{Cliente} & Id, Nome, CPF, Email, Telefone, CNH & CPF único (11 dígitos); Email e CNH únicos \\
+\textbf{Aluguel} & Id, DataInicio, DataPrevista, DataDevolucao, KmInicial, KmFinal, ValorTotal & Status (Ativo/Finalizado); FKs para Cliente e Veiculo \\
+\textbf{Pagamento} & Id, ValorPago, DataPagamento, Metodo, Status & FK para Aluguel; Método (Cartão/PIX/Dinheiro) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Concepção e Especificação dos Wireframes}
+
+Em estrita consonância com os requisitos metodológicos da disciplina, a interface gráfica foi precedida pela elaboração de wireframes em média fidelidade, concebidos em escala de cinzas e tons neutros para priorizar a usabilidade, a hierarquia da informação e a ergonomia de navegação antes da codificação visual.
+
+Os wireframes foram construídos de forma modular, organizando o fluxo de trabalho do operador da locadora em três áreas fundamentais:
 \begin{enumerate}
-    \item \textbf{Dashboard Executivo:} Apresenta cartões de indicadores (KPIs) com total de clientes, frota, veículos alugados e faturamento acumulado, além de gráfico de disponibilidade.
-    \item \textbf{Telas de CRUD:} Estrutura padronizada com barra de busca em múltiplos campos, botão de inserção em destaque e tabela de dados com botões contextuais de edição e exclusão.
-    \item \textbf{Modais de Fluxo de Negócio:} Janelas suspensas com validação de formulários para cadastro de clientes, frota e o fluxo crítico de devolução de veículos com recálculo de odômetro.
-    \item \textbf{Painel de Consultas Avançadas:} Disposição em abas para alternar dinamicamente entre os relatórios analíticos de junções.
+    \item \textbf{Barra de Navegação Lateral (Sidebar):} Acesso direto e persistente aos módulos de Dashboard, Clientes, Frota de Veículos, Aluguéis \& Devoluções, Fabricantes/Categorias e Consultas \& Relatórios.
+    \item \textbf{Área de Filtros e Pesquisa Multifatorial:} Posicionada no topo de cada visão tabular, permitindo refinamento instantâneo por múltiplos parâmetros simultâneos sem necessidade de recarregamento de página.
+    \item \textbf{Modais de Ação Contextual:} Janelas de diálogo suspensas dedicadas ao cadastro e edição, isolando o foco cognitivo do usuário durante tarefas de inserção e baixa de veículos.
 \end{enumerate}
 
-O projeto completo de wireframes está disponibilizado no Figma através do link público:\\
+A Figura~\ref{fig:wireframe_dashboard} apresenta o wireframe do Dashboard Executivo, concebido para oferecer visualização instantânea dos indicadores-chave de desempenho (KPIs) da empresa: total de clientes, frota total, contratos ativos e faturamento consolidado.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{figuras/01_dashboard.png}
+\caption{Wireframe do Dashboard Executivo com indicadores e contratos recentes.}
+\label{fig:wireframe_dashboard}
+\end{figure}
+
+Para a etapa analítica do sistema, projetou-se um wireframe específico baseado em abas tabulares (\textit{Tabs}), permitindo que o gestor alterne com facilidade entre os cinco relatórios relacionais avançados sem poluição visual, conforme ilustrado na Figura~\ref{fig:wireframe_consultas}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{figuras/06_consultas_avancadas.png}
+\caption{Wireframe do módulo de Consultas Avançadas e Relatórios em abas.}
+\label{fig:wireframe_consultas}
+\end{figure}
+
+O projeto completo de wireframes encontra-se compartilhado publicamente no Figma através do link oficial:\\
 \url{https://www.figma.com/design/4RvUybZX26RIYfpTQJoJzv/Trabalho-Pr%C3%A1tico-2?node-id=0-1&t=VaKG7JrY3j0xc9lp-1}
 
-\section{Implementação do Front-End}
+\section{Implementação da Camada Front-End}
 
-A camada de front-end foi desenvolvida como uma Single-Page Application (SPA) modularizada na pasta \texttt{frontend/}, eliminando a necessidade de ferramentas pesadas de build e assegurando execução nativa em qualquer navegador web moderno.
+A camada cliente foi desenvolvida sob o paradigma de Single-Page Application (SPA) pura, concentrada no diretório \texttt{frontend/}. Optou-se deliberadamente pelo não uso de frameworks JavaScript pesados (como Angular ou React), assegurando leveza, carregamento imediato e portabilidade nativa em qualquer navegador web moderno.
 
-\subsection{Tecnologias Empregadas}
+\subsection{Pilha Tecnológica e Estrutura de Arquivos}
+A estrutura do front-end foi dividida em três pilares:
 \begin{itemize}
-    \item \textbf{HTML5 Semântico:} Estruturação de containers com separação nítida de visões (\texttt{view-dashboard}, \texttt{view-clientes}, etc.).
-    \item \textbf{Bootstrap 5.3 e CSS3:} Sistema de grid responsivo, tipografia limpa, estilização customizada de tabela e efeitos visuais com microinterações.
-    \item \textbf{JavaScript Vanilla Assíncrono:} Utilização da Fetch API encapsulada em uma classe de serviço estática (\texttt{ApiService}), centralizando o tratamento de erros HTTP e serialização JSON.
+    \item \textbf{Estruturação e Estilo:} O arquivo \texttt{index.html} utiliza HTML5 semântico com seções alternáveis (\texttt{view-dashboard}, \texttt{view-clientes}, etc.). O framework Bootstrap 5.3 gerencia o grid responsivo e os componentes visuais, enquanto \texttt{css/style.css} personaliza cartões, tipografia, badges e sombras.
+    \item \textbf{Serviço de Comunicação REST (\texttt{js/api.js}):} Classe estática \texttt{ApiService} encapsulando chamadas assíncronas via \texttt{fetch()}. Gerencia serialização JSON, envio de cabeçalhos padronizados e interceptação de erros HTTP, traduzindo falhas de rede em notificações amigáveis.
+    \item \textbf{Controlador de Aplicação (\texttt{js/app.js}):} Mantém o estado global em memória (\texttt{AppState}), gerencia eventos de navegação, disparo de modais, escutas de filtros e operações de CRUD.
+    \item \textbf{Módulo de Consultas Analíticas (\texttt{js/consultas.js}):} Responsável por parametrizar e despachar as chamadas às cinco consultas avançadas com junções relacionais.
 \end{itemize}
 
-\subsection{Filtros em Múltiplos Campos por Entidade}
-Para cumprir a exigência de buscas com pelo menos dois campos por entidade, os seguintes mecanismos foram incorporados:
+\subsection{Validações em Tempo Real e Prevenção de Duplo Envio}
+Para garantir a integridade dos dados antes do tráfego de rede, foram incorporadas máscaras dinâmicas de digitação nos campos críticos:
 \begin{itemize}
-    \item \textbf{Clientes:} Filtragem dinâmica instantânea por \textit{Nome} e por \textit{CPF}.
-    \item \textbf{Veículos:} Filtragem combinada por \textit{Modelo}, \textit{Placa} e \textit{Categoria}.
-    \item \textbf{Aluguéis:} Filtragem por \textit{Nome do Cliente} e por \textit{Status do Contrato} (\textit{Ativo} ou \textit{Finalizado}).
-    \item \textbf{Fabricantes:} Filtragem por \textit{Nome da Montadora} e por \textit{País de Origem}.
+    \item \textbf{CPF do Cliente:} Máscara automática formatando o padrão \texttt{000.000.000-00} com limite rígido de 14 caracteres (11 dígitos numéricos), aplicada tanto no modal de cadastro quanto no campo de filtro.
+    \item \textbf{Telefone:} Formatação em tempo real no padrão \texttt{(00) 00000-0000} (15 caracteres para celulares) ou \texttt{(00) 0000-0000} (14 caracteres para fixos).
+    \item \textbf{CNH:} Validação numérica estrita com limite máximo de 11 caracteres.
 \end{itemize}
+
+Adicionalmente, todos os formulários receberam mecanismo de proteção contra múltiplos envios (duplo clique): ao submeter um formulário, o botão de confirmação é desabilitado instantaneamente e recebe um indicador giratório (\textit{spinner}) com o texto ``Salvando...'', sendo reabilitado somente após a conclusão da requisição na cláusula \texttt{finally}.
 
 \section{Resultados e Integração das Consultas com Joins}
 
-A interface gráfica foi totalmente conectada à API em tempo real. A Figura~\ref{fig:dashboard} ilustra a tela inicial do sistema exibindo métricas consolidadas e contratos recentes carregados diretamente do banco de dados.
+A aplicação foi integrada com êxito à API em execução local. A Figura~\ref{fig:real_dashboard} ilustra a tela de Dashboard do front-end em produção, exibindo dados computados diretamente do banco relacional, incluindo totalizador de frota, contagem de locações ativas e faturamento acumulado.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{figuras/01_dashboard.png}
-\caption{Dashboard com indicadores numéricos e contratos ativos.}
-\label{fig:dashboard}
+\includegraphics[width=0.92\textwidth]{figuras/frontend_dashboard.png}
+\caption{Dashboard da aplicação integrada em tempo real via API RESTful.}
+\label{fig:real_dashboard}
 \end{figure}
 
-A Figura~\ref{fig:clientes} exibe a gestão de clientes, demonstrando a busca simultânea por nome e CPF, bem como a listagem tabular populada pela rota \texttt{GET /api/Clientes}.
+Na gestão operacional de clientes, a Figura~\ref{fig:real_clientes} evidencia a interface com suporte a busca simultânea em múltiplos campos (Nome e CPF com máscara), permitindo a localização ágil de locatários e a execução de operações completas de alteração e exclusão.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{figuras/02_clientes.png}
-\caption{Tela de Gestão de Clientes com filtro duplo e ações de CRUD.}
-\label{fig:clientes}
+\includegraphics[width=0.92\textwidth]{figuras/frontend_clientes.png}
+\caption{Interface de Gestão de Clientes com filtro duplo e máscaras ativas.}
+\label{fig:real_clientes}
 \end{figure}
 
-\subsection{Demonstração das Consultas com Joins}
-O módulo de Consultas Avançadas utiliza abas dinâmicas para executar as consultas relacionais parametrizadas:
+\subsection{Demonstração e Mapeamento das Consultas com Joins}
 
-\begin{itemize}
-    \item \textbf{Filtro 1 (INNER JOIN):} A rota \texttt{/api/Veiculos/disponiveis} realiza a junção entre Veículos, Categorias e Fabricantes, permitindo filtrar apenas automóveis aptos à locação por montadora e categoria.
-    \item \textbf{Filtro 2 (INNER JOIN):} A rota \texttt{/api/Alugueis/cliente/\{id\}} realiza junção entre contratos, locatários e veículos, exibindo o histórico analítico de locações de um determinado cliente.
-    \item \textbf{Filtro 3 (LEFT JOIN):} A rota \texttt{/api/Clientes/relatorio-locacoes} cruza Clientes com Aluguéis, garantindo a exibição de toda a base cadastrada, inclusive clientes que ainda não possuem contratos registrados, calculando quantidade total de locações e montante financeiro gasto.
-    \item \textbf{Filtro 4 (LEFT + INNER JOIN):} A rota \texttt{/api/Veiculos/relatorio-frota} quantifica o desempenho de utilização de cada veículo da frota.
-    \item \textbf{Filtro 5 (LEFT + INNER JOIN):} A rota \texttt{/api/Alugueis/status-pagamento} monitora a liquidação financeira de cada contrato.
-\end{itemize}
+Para cumprir a exigência mandatória de pelo menos cinco consultas utilizando junções relacionais (\textit{INNER JOIN} e \textit{LEFT JOIN}), desenvolveu-se o painel de Consultas Avançadas. A Tabela~\ref{tab:consultas} detalha a correlação técnica de cada consulta implementada.
+
+\begin{table}[H]
+\centering
+\caption{Mapeamento das 5 consultas relacionais avançadas integradas ao front-end.}
+\label{tab:consultas}
+\vspace{2mm}
+\footnotesize
+\begin{tabular}{lp{4.2cm}lp{3.5cm}}
+\toprule
+\textbf{Consulta} & \textbf{Rota da API (Endpoint)} & \textbf{Tipo de Junção} & \textbf{Objetivo no Negócio} \\
+\midrule
+\textbf{Filtro 1} & \texttt{/api/Veiculos/disponiveis} & \textit{INNER JOIN} & Veículos livres filtrados por Categoria e Montadora. \\
+\textbf{Filtro 2} & \texttt{/api/Alugueis/cliente/\{id\}} & \textit{INNER JOIN} & Histórico consolidado de locações de um cliente. \\
+\textbf{Filtro 3} & \texttt{/api/Clientes/relatorio-locacoes} & \textit{LEFT JOIN} & Relação de todos os clientes e faturamento gerado. \\
+\textbf{Filtro 4} & \texttt{/api/Veiculos/relatorio-frota} & \textit{LEFT + INNER} & Taxa de ocupação e quilometragem rodada da frota. \\
+\textbf{Filtro 5} & \texttt{/api/Alugueis/status-pagamento} & \textit{LEFT + INNER} & Auditoria financeira de contratos quitados e pendentes. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A Figura~\ref{fig:real_consultas} exibe a tela de Consultas Avançadas em operação, demonstrando a renderização limpa e profissional dos dados retornados pelas junções SQL, sem exposição desnecessária de termos técnicos ao usuário final.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{figuras/06_consultas_avancadas.png}
-\caption{Painel de Consultas Avançadas executando consultas com Joins.}
-\label{fig:consultas}
+\includegraphics[width=0.92\textwidth]{figuras/frontend_consultas.png}
+\caption{Painel de Consultas Avançadas exibindo resultados das junções relacionais.}
+\label{fig:real_consultas}
 \end{figure}
 
 \section{Considerações Finais}
 
-O Trabalho Prático 2 permitiu consolidar a integração prática entre camadas de front-end e back-end em um ambiente web completo. A arquitetura em SPA aliada ao Bootstrap 5 possibilitou uma experiência de usuário fluida e responsiva, enquanto a API em .NET 8 garantiu integridade relacional, segurança nas regras de negócio e retorno preciso dos dados.
+O Trabalho Prático 2 alcançou plenamente os objetivos pedagógicos e técnicos propostos pela disciplina de Programação Back-End. A construção do front-end a partir de wireframes no Figma proporcionou uma transição consistente entre a fase de design de interação e a codificação de software.
 
-Todos os requisitos propostos foram atendidos: wireframes concebidos, rotas integradas sem dados mocados, operações de CRUD e busca multifatorial funcionais em todas as entidades e visualização estruturada das cinco consultas relacionais avançadas.
+A arquitetura em SPA aliada à Fetch API permitiu uma interface responsiva, com validações cadastrais instantâneas e tratamento elegante de erros de banco de dados. A integração ponta a ponta com a API em C# (.NET 8) comprovou a eficácia do desacoplamento arquitetural, mantendo a integridade referencial por meio de consultas otimizadas com \textit{INNER JOIN} e \textit{LEFT JOIN}.
 
-\section*{Repositório e Vídeo da Apresentação}
+\section*{Repositório, Wireframes e Vídeo}
 \begin{itemize}
-    \item \textbf{Repositório GitHub:} \url{https://github.com/vitor-schmidt-ribeiro/locadora-veiculos}
+    \item \textbf{Repositório no GitHub:} \url{https://github.com/vitor-schmidt-ribeiro/locadora-veiculos}
     \item \textbf{Wireframes no Figma:} \url{https://www.figma.com/design/4RvUybZX26RIYfpTQJoJzv/Trabalho-Pr%C3%A1tico-2?node-id=0-1&t=VaKG7JrY3j0xc9lp-1}
-    \item \textbf{Vídeo de Apresentação (Pitch):} \url{[Inserir link do vídeo de 3 a 5 minutos gravado]}
+    \item \textbf{Vídeo de Apresentação (Pitch):} Link de compartilhamento disponibilizado no Canvas.
 \end{itemize}
+
+\begin{thebibliography}{6}
+
+\bibitem{elmasri2011}
+Elmasri, R. e Navathe, S.~B. (2011).
+\newblock {\em Sistemas de Banco de Dados}.
+\newblock Pearson Addison Wesley, São Paulo, 6ª edição.
+
+\bibitem{pressman2016}
+Pressman, R.~S. e Maxim, B.~R. (2016).
+\newblock {\em Engenharia de Software: Uma Abordagem Profissional}.
+\newblock McGraw-Hill, Porto Alegre, 8ª edição.
+
+\bibitem{sommerville2011}
+Sommerville, I. (2011).
+\newblock {\em Engenharia de Software}.
+\newblock Pearson, São Paulo, 9ª edição.
+
+\bibitem{microsoftdotnet}
+Microsoft (2024).
+\newblock {\em Documentação Oficial do ASP.NET Core e Entity Framework Core}.
+\newblock Microsoft Learn. Disponível em: \url{https://learn.microsoft.com/aspnet/core}.
+
+\bibitem{bootstrap5}
+Bootstrap Team (2024).
+\newblock {\em Bootstrap 5 Documentation: Responsive Front-End Framework}.
+\newblock Disponível em: \url{https://getbootstrap.com/docs/5.3/}.
+
+\bibitem{sbc2024}
+Sociedade Brasileira de Computação (SBC) (2024).
+\newblock {\em Padrões para Publicação de Artigos em Conferências da SBC}.
+\newblock Disponível em: \url{https://www.sbc.org.br}.
+
+\end{thebibliography}
 
 \end{document}

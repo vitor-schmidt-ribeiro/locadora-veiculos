@@ -19,7 +19,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupFilterListeners();
   setupInputMasks();
   await loadInitialData();
-  showView('dashboard');
+  const hash = window.location.hash.replace('#', '');
+  if (hash && ['dashboard', 'clientes', 'veiculos', 'alugueis', 'fabricantes-categorias', 'consultas'].includes(hash)) {
+    showView(hash);
+  } else {
+    showView('dashboard');
+  }
 });
 
 // Funções de Máscara e Formatação
